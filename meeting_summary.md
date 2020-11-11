@@ -58,7 +58,7 @@ for i,j:
 
 ### ps
 
-* 做这种project的simulation -> analysis步骤时，最好把一次考虑了多种参数和需求的simulation的结果存成一个大的ndarray，后面每步analysis或者画图，取相应部分来用即可，这样可以避免每次analysis都回去耗时跑simulation
+* 做这种project的simulation -> analysis步骤时，最好把一次考虑了多种参数和需求的simulation的结果存成一个大的ndarray(or导出存起来)，后面每步analysis或者画图，取相应部分来用即可，这样可以避免每次analysis都回去耗时跑simulation
 
 * report用ipynb写的话
   * 相比md的好处是，打公式更方便
