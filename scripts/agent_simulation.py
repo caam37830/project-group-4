@@ -44,24 +44,15 @@ def run_sim(b, k, N, T):
     counts_sir = count_sir(pop)
 
     for t in range(T):
-    # update the population
         infected = [i for i in range(N) if pop[i].is_infected()]
-        all_contacts = np.array([], dtype=int)
-
-        # each infectious person contact b people, including S,I,R
         for i in infected:
+            # each infectious person contact b people, including S,I,R
             contacts = choice(list(set(range(N))-set([i])), size=b, replace=False)
-            all_contacts = np.concatenate((all_contacts, contacts))
-
-        # contacts may get infected
-        for i in all_contacts:
-            pop[i].contact()
-
-        # recover
-        # k fraction of the infectious population recover
-        recover = choice(infected, size=int(len(infected)*k), replace=False)
-        for i in recover:
-            pop[i].recover()
+            for j in contacts:
+                pop[j].contact() # if S, then get infected
+            # k fraction of the infectious population recover
+            if rand() < k:
+                pop[i].recover()
 
         # append SIR counts at time t
         counts_sir = np.vstack((counts_sir, count_sir(pop)))
