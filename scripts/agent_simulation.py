@@ -24,75 +24,81 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.random import randint, rand
+from numpy.random import randint, rand, choice
 from sir import *
-sys.path.append("..")
 
-def count_infected(pop):
-    return sum(p.is_infected() for p in pop)
-def count_recovered(pop):
-    return sum(p.is_recovered() for p in pop)
-def count_susceptible(pop,N):
-    return N - count_infected(pop) - count_recovered(pop)
+def count_sir(pop):
+    I = sum(p.is_infected() for p in pop)
+    R = sum(p.is_recovered() for p in pop)
+    S = len(pop) - I - R
+    return np.array([S,I,R])
 
 def run_sim(b, k, N, T):
     """
-    return the number of people enlightened at time T
+    return the number of people in each group from time 0 to time T
     """
     pop = [Person() for i in range(N)] # our population
-    infect = randint(N, size = int(0.001*N))
-    for i in infect:
+    infected = choice(range(N), size=int(N*0.001), replace=False) # 0.1% infected at T=0
+    for i in infected:
         pop[i].infect()
-    counts_I = [count_infected(pop)]
-    counts_R = [count_recovered(pop)]
-    counts_S = [count_susceptible(pop,N)]
+    counts_sir = count_sir(pop)
+
     for t in range(T):
     # update the population
-        for i in range(N):
-            if pop[i].is_infected():
-        # person i infect susceptible with infection rate b/N
-                for j in range(N):
-                    if not pop[j].is_infected() and not pop[j].is_recovered():
-                        if rand() < b/N:
-                            pop[j].infect()
-        # infected population get recovered with rate k
-            if rand() < k:
-                pop[i].recover()
-          # add to our counts
-        counts_I.append(count_infected(pop))
-        counts_R.append(count_recovered(pop))
-        counts_S.append(count_susceptible(pop,N))
-    return  counts_I,counts_R,counts_S
+        infected = [i for i in range(N) if pop[i].is_infected()]
+        all_contacts = np.array([], dtype=int)
+
+        # each infectious person contact b people, including S,I,R
+        for i in infected:
+            contacts = choice(list(set(range(N))-set([i])), size=b, replace=False)
+            all_contacts = np.concatenate((all_contacts, contacts))
+
+        # contacts may get infected
+        for i in all_contacts:
+            pop[i].contact()
+
+        # recover
+        # k fraction of the infectious population recover
+        recover = choice(infected, size=int(len(infected)*k), replace=False)
+        for i in recover:
+            pop[i].recover()
+
+        # append SIR counts at time t
+        counts_sir = np.vstack((counts_sir, count_sir(pop)))
+    return counts_sir
 
 # plot how s, i, and r change over the length of the simulation
-sim1 = run_sim(5,0.01,5000,20)
-print(sim1[0])
-plt.plot(sim1[2],label = "Susceptible")
-plt.plot(sim1[0],label = "Infected")
-plt.plot(sim1[1],label = "Recovered")
+sim1 = run_sim(8,0.01,1000,100) # shape = (T+1, 3), columns are S, I, R
+plt.plot(sim1[:,0],label = "Susceptible")
+plt.plot(sim1[:,1],label = "Infected")
+plt.plot(sim1[:,2],label = "Recovered")
 plt.legend()
 plt.show()
 
-T = 20
+# simulation for bs and ks
+T = 10
 N = 1000
-bs = np.arange(1,3, dtype=np.int64)
-ks = np.logspace(-2,-1,10)
-cts_I = np.zeros((len(bs), len(ks),T+1))
-cts_R = np.zeros((len(bs), len(ks),T+1))
-cts_S = np.zeros((len(bs), len(ks),T+1))
+bs = np.arange(1, 11, dtype=np.int64)
+ks = np.logspace(-2,0,10)
+results = np.zeros((len(bs), len(ks), T+1, 3)) # empty container
 
 for i, b in enumerate(bs):
     for j, k in enumerate(ks):
-        cts_I[i,j,],cts_R,cts_S = run_sim(b,k,N,T)
-#phase diagram at time t
-t = 10
+        counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
+        results[i,j,...] = counts_sir / N # convert to fractions, store in results
+
+# facet plot
+
+
+
+
+# phase diagram at time t
+t = 10 # t <= T
 plt.figure(figsize=(10,5))
-plt.imshow(cts_I[:len(bs),:len(ks),t], extent=[np.min(bs), np.max(bs),np.min(ks), np.max(ks)])
+plt.imshow(cts[:,:,t,1], extent=[np.min(bs), np.max(bs),np.min(ks), np.max(ks)]) # 1 = infectious
 plt.colorbar()
-# plt.axis('square')
 plt.yscale('log')
-plt.xlabel('b')
-plt.ylabel('k')
+plt.axis('auto')
+plt.xlabel('b: number of interactions')
+plt.ylabel('k: recover fraction')
 plt.show()
-
-

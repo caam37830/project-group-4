@@ -15,7 +15,7 @@ class Person():
 
 
     def __init__(self):
-        # self.S = True # default setting not I not R -> person is susceptible
+        self.S = True # default setting not I not R -> person is susceptible
         self.I = False  # if I = True, the person has infected
         self.R = False  # if R = True, the person has recovered and cannot be infected
 
@@ -33,13 +33,25 @@ class Person():
 
     def infect(self):
         """
-        person get infected
+        among all contacts, susceptible person get infected
         """
-        self.I = True
+        if self.S:
+            self.I = True
+            self.S = False
+
+    def contact(self):
+        """
+        among all contacts, susceptible person get infected
+        """
+        if self.S:
+            self.I = True
+            self.S = False
 
     def recover(self):
         """
-        person get recovered and cannot get infected later
+        infectious persons get recovered and cannot get infected later
         """
+        if not self.I:
+            raise ValueError("only infectious persons can recover")
         self.R = True
         self.I = False
