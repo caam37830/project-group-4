@@ -23,7 +23,7 @@ def ode_model(i0, T, b, k):
 
     y0 = np.array([1 - i0, i0, 0])
     t_span = (0, T)
-    t_eval = np.linspace(0, T, T * 10)
+    t_eval = np.linspace(0, T, int(T))
 
     sol = solve_ivp(f, t_span, y0, t_eval=t_eval)
 

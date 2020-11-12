@@ -23,4 +23,73 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 
 import sys
 sys.path.append("..")
-from sir import * # you can use ode_model() now
+from sir import *
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# some functions
+def plot_sim(result, b, k, ax, accessory=True):
+    """
+    plot the fraction of people in each group over time
+    result = np.array([s, i, r])
+    """
+    ax.plot(result[0], label="Susceptible")
+    ax.plot(result[1], label="Infectious")
+    ax.plot(result[2], label="Removed")
+    if accessory:
+        ax.set_title("b={:.3f}, k={:.3f}".format(b, k))
+        ax.set_xlabel("time")
+        ax.set_ylabel("fraction of people")
+        ax.legend()
+
+def run_sim(i0, T, bs, ks):
+    """
+    return the fraction of people in each group from time 0 to time T
+    """
+    results = np.zeros((len(bs), len(ks), 3, int(T)))
+    for i, b in enumerate(bs):
+        for j, k in enumerate(ks):
+            results[i,j,...] = np.array(ode_model(i0, T, b, k))
+    return results
+
+# an example
+N = 10000; T = 100; i0 = 0.001
+b = 1; k = 0.1
+f, ax = plt.subplots()
+plot_sim(ode_model(i0, T, b, k), b, k, ax)
+plt.show()
+
+# facet plot
+bs = np.arange(1, 11, 2, dtype=np.int64)
+ks = np.logspace(-2, 0, 5)
+results_small = run_sim(i0, T, bs, ks)
+
+f, ax = plt.subplots(len(bs), len(ks), figsize=(20, 16), sharex=True, sharey=True)
+for i, b in enumerate(bs):
+    for j, k in enumerate(ks):
+        plot_sim(results_small[i,j], b, k, ax[i,j], accessory=False)
+        
+for i, b in enumerate(bs):
+    ax[i,0].set_ylabel("b = {}".format(b))
+for j, k in enumerate(ks):
+    ax[0,j].set_title("k = {:.2f}".format(k))
+ax[0,-1].legend()
+f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
+f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
+plt.savefig("../output/ode_facet_plot.png")
+
+# phase diagram at time t
+bs = np.arange(1, 11, dtype=np.int64)
+ks = np.logspace(-2, 0, 10)
+results_large = run_sim(i0, T, bs, ks)
+
+t = 10
+plt.figure(figsize=(10,5))
+plt.imshow(results_large[:,:,1,t], extent=[np.min(bs), np.max(bs),np.min(ks), np.max(ks)]) # 1 = infectious
+plt.colorbar()
+plt.yscale('log')
+plt.axis('auto')
+plt.xlabel('b: number of interactions')
+plt.ylabel('k: recover fraction')
+plt.savefig("../output/ode_phase_plot.png")

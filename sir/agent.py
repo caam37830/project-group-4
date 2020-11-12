@@ -1,7 +1,3 @@
-
-
-
-
 class Person():
     """
     This module implements an agent-based model.
@@ -12,7 +8,6 @@ class Person():
     and recovered by recover method.
 
     """
-
 
     def __init__(self):
         self.S = True # default setting not I not R -> person is susceptible
