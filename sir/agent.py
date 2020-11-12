@@ -4,7 +4,7 @@ class Person():
     It defines a class which represents a person, with an internal state which is
     one of S, I or R.
 
-    By default, a person is not susceptible.  They become infected using the infect method,
+    By default, a person is susceptible.  They become infected using the infect method,
     and recovered by recover method.
 
     """
@@ -28,19 +28,20 @@ class Person():
 
     def infect(self):
         """
-        among all contacts, susceptible person get infected
+        susceptible person get infected
         """
-        if self.S:
-            self.I = True
-            self.S = False
+        if not self.S:
+            raise ValueError("only susceptible person can befome infectious")
+        self.I = True
+        self.S = False
+
 
     def contact(self):
         """
         among all contacts, susceptible person get infected
         """
         if self.S:
-            self.I = True
-            self.S = False
+            self.infect()
 
     def recover(self):
         """
