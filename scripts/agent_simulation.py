@@ -73,29 +73,29 @@ def run_sim(b, k, N, T):
 T = 100
 N = 1000
 #for facet plot
-# f_bs = np.arange(1, 11, 2, dtype=np.int64)
-# f_ks = np.logspace(-2, 0, 5)
-# f_results = np.zeros((len(f_bs), len(f_ks), T+1, 3)) # empty container
-#
-# for i, b in enumerate(f_bs):
-#     for j, k in enumerate(f_ks):
-#         counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
-#         f_results[i,j,...] = counts_sir / N # convert to fractions, store in results
-#
-# # facet plot
-# f, ax = plt.subplots(len(f_bs), len(f_ks), figsize=(20, 16), sharex=True, sharey=True)
-# for i, b in enumerate(f_bs):
-#      for j, k in enumerate(f_ks):
-#         ode.plot_sim(f_results[i,j].T, b, k, ax[i,j], accessory=False)
-#
-# for i, b in enumerate(f_bs):
-#     ax[i, 0].set_ylabel("b = {}".format(b))
-# for j, k in enumerate(f_ks):
-#     ax[0, j].set_title("k = {:.2f}".format(k))
-# ax[0, -1].legend()
-# f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
-# f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
-# plt.savefig("../output/agent_facet_plot.png")
+f_bs = np.arange(1, 11, 2, dtype=np.int64)
+f_ks = np.logspace(-2, 0, 5)
+f_results = np.zeros((len(f_bs), len(f_ks), T+1, 3)) # empty container
+
+for i, b in enumerate(f_bs):
+    for j, k in enumerate(f_ks):
+        counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
+        f_results[i,j,...] = counts_sir / N # convert to fractions, store in results
+
+# facet plot
+f, ax = plt.subplots(len(f_bs), len(f_ks), figsize=(20, 16), sharex=True, sharey=True)
+for i, b in enumerate(f_bs):
+     for j, k in enumerate(f_ks):
+        ode.plot_sim(f_results[i,j].T, b, k, ax[i,j], accessory=False)
+
+for i, b in enumerate(f_bs):
+    ax[i, 0].set_ylabel("b = {}".format(b))
+for j, k in enumerate(f_ks):
+    ax[0, j].set_title("k = {:.2f}".format(k))
+ax[0, -1].legend()
+f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
+f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
+plt.savefig("../output/agent_facet_plot.png")
 
 #for phase diagram
 p_bs = np.arange(1, 11, dtype=np.int64)
