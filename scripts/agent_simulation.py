@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import randint, rand, choice
 from sir import *
+from scripts import ode_simulation as ode
 
 def count_sir(pop):
     I = sum(p.is_infected() for p in pop)
@@ -58,38 +59,61 @@ def run_sim(b, k, N, T):
         counts_sir = np.vstack((counts_sir, count_sir(pop)))
     return counts_sir
 
+
 # plot how s, i, and r change over the length of the simulation
-sim1 = run_sim(8,0.01,1000,100) # shape = (T+1, 3), columns are S, I, R
-plt.plot(sim1[:,0],label = "Susceptible")
-plt.plot(sim1[:,1],label = "Infected")
-plt.plot(sim1[:,2],label = "Recovered")
-plt.legend()
-plt.show()
+#for each single case
+# sim1 = run_sim(8,0.01,1000,100) # shape = (T+1, 3), columns are S, I, R
+# plt.plot(sim1[:,0],label = "Susceptible")
+# plt.plot(sim1[:,1],label = "Infected")
+# plt.plot(sim1[:,2],label = "Recovered")
+# plt.legend()
+# plt.show()
 
 # simulation for bs and ks
-T = 10
+T = 100
 N = 1000
-bs = np.arange(1, 11, dtype=np.int64)
-ks = np.logspace(-2,0,10)
-results = np.zeros((len(bs), len(ks), T+1, 3)) # empty container
+#for facet plot
+# f_bs = np.arange(1, 11, 2, dtype=np.int64)
+# f_ks = np.logspace(-2, 0, 5)
+# f_results = np.zeros((len(f_bs), len(f_ks), T+1, 3)) # empty container
+#
+# for i, b in enumerate(f_bs):
+#     for j, k in enumerate(f_ks):
+#         counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
+#         f_results[i,j,...] = counts_sir / N # convert to fractions, store in results
+#
+# # facet plot
+# f, ax = plt.subplots(len(f_bs), len(f_ks), figsize=(20, 16), sharex=True, sharey=True)
+# for i, b in enumerate(f_bs):
+#      for j, k in enumerate(f_ks):
+#         ode.plot_sim(f_results[i,j].T, b, k, ax[i,j], accessory=False)
+#
+# for i, b in enumerate(f_bs):
+#     ax[i, 0].set_ylabel("b = {}".format(b))
+# for j, k in enumerate(f_ks):
+#     ax[0, j].set_title("k = {:.2f}".format(k))
+# ax[0, -1].legend()
+# f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
+# f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
+# plt.savefig("../output/agent_facet_plot.png")
 
-for i, b in enumerate(bs):
-    for j, k in enumerate(ks):
+#for phase diagram
+p_bs = np.arange(1, 11, dtype=np.int64)
+p_ks = np.logspace(-2, 0, 10)
+p_results = np.zeros((len(p_bs), len(p_ks), T+1, 3)) # empty container
+
+for i, b in enumerate(p_bs):
+    for j, k in enumerate(p_ks):
         counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
-        results[i,j,...] = counts_sir / N # convert to fractions, store in results
-
-# facet plot
-
-
-
-
+        p_results[i,j,...] = counts_sir / N
 # phase diagram at time t
 t = 10 # t <= T
 plt.figure(figsize=(10,5))
-plt.imshow(cts[:,:,t,1], extent=[np.min(bs), np.max(bs),np.min(ks), np.max(ks)]) # 1 = infectious
+plt.imshow(p_results[:,:,t,1], extent=[np.min(p_bs), np.max(p_bs),np.min(p_ks), np.max(p_ks)]) # 1 = infectious
 plt.colorbar()
 plt.yscale('log')
 plt.axis('auto')
 plt.xlabel('b: number of interactions')
 plt.ylabel('k: recover fraction')
-plt.show()
+plt.title('Phase Diagram of Infection Rate at Day {}'.format(t))
+plt.savefig("../output/agent_phase_plot.png")
