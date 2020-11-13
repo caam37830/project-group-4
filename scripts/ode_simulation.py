@@ -85,11 +85,15 @@ ks = np.logspace(-2, 0, 10)
 results_large = run_sim(i0, T, bs, ks)
 
 t = 10
-plt.figure(figsize=(10,5))
-plt.imshow(results_large[:,:,1,t], extent=[np.min(bs), np.max(bs),np.min(ks), np.max(ks)]) # 1 = infectious
-plt.colorbar()
-plt.yscale('log')
-plt.axis('auto')
-plt.xlabel('b: number of interactions')
-plt.ylabel('k: recover fraction')
+f, ax = plt.subplots(1, 3, figsize=(15,5))
+for i, t in enumerate([5, 10, 50]):
+    m = ax[i].imshow(results_large[::-1,:,1,t],
+                     extent=[np.min(ks), np.max(ks), np.min(bs), np.max(bs)],
+                     vmin=0, vmax=1)
+    ax[i].axis('auto')
+    ax[i].set_title(f"t = {t}")
+f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
+f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
+f.text(0.5, 0, 'k: recover fraction', ha='center', fontsize=12)
+f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
 plt.savefig("../output/ode_phase_plot.png")
