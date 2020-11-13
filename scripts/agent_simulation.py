@@ -21,11 +21,12 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 
 """
 
-import sys
+import sys, os
+sys.path.append(os.getcwd())
+from sir import *
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import randint, rand, choice
-from sir import *
 from scripts import ode_simulation as ode
 
 def count_sir(pop):
