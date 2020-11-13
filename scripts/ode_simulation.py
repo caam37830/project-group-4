@@ -25,11 +25,9 @@ import sys, os
 sys.path.append(os.getcwd())
 from sir import *
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-# some functions
 def plot_sim(result, b, k, ax, accessory=True):
     """
     plot the fraction of people in each group over time
@@ -59,7 +57,7 @@ N = 10000; T = 100; i0 = 0.001
 b = 1; k = 0.1
 f, ax = plt.subplots()
 plot_sim(ode_model(i0, T, b, k), b, k, ax)
-plt.show()
+# plt.show()
 
 # facet plot
 bs = np.arange(1, 11, 2, dtype=np.int64)
@@ -76,9 +74,10 @@ for i, b in enumerate(bs):
 for j, k in enumerate(ks):
     ax[0,j].set_title("k = {:.2f}".format(k))
 ax[0,-1].legend()
+f.text(0.5, 0.95, 'Facet Diagram for Different Parameter Values', ha='center', fontsize=18)
 f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
 f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
-plt.savefig("../output/ode_facet_plot.png")
+# plt.savefig("output/ode_facet_plot.png")
 
 # phase diagram at time t
 bs = np.arange(1, 11, dtype=np.int64)
@@ -95,6 +94,6 @@ for i, t in enumerate([5, 10, 50]):
     ax[i].set_title(f"t = {t}")
 f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
 f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
-f.text(0.5, 0, 'k: recover fraction', ha='center', fontsize=12)
+f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
 f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-plt.savefig("../output/ode_phase_plot.png")
+# plt.savefig("output/ode_phase_plot.png", dpi=200)
