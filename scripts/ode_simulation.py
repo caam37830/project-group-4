@@ -21,9 +21,10 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 
 """
 
-import sys
-sys.path.append("..")
+import sys, os
+sys.path.append(os.getcwd())
 from sir import *
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -69,7 +70,7 @@ f, ax = plt.subplots(len(bs), len(ks), figsize=(20, 16), sharex=True, sharey=Tru
 for i, b in enumerate(bs):
     for j, k in enumerate(ks):
         plot_sim(results_small[i,j], b, k, ax[i,j], accessory=False)
-        
+
 for i, b in enumerate(bs):
     ax[i,0].set_ylabel("b = {}".format(b))
 for j, k in enumerate(ks):
