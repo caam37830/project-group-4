@@ -36,7 +36,4 @@ class Test_models(unittest.TestCase):
             for k in ks:
                 s,i,r = ode_model(i0, T, b, k)
                 for t in range(len(s)): # every day
-                    self.assertTrue(s[t]>=0, f'fail when t={t}, b={b}, k={k}: 0>s[t]={s[t]}')
-                    self.assertTrue(i[t]>=0, f'fail when t={t}, b={b}, k={k}: 0>i[t]={i[t]}')
-                    self.assertTrue(r[t]>=0, f'fail when t={t}, b={b}, k={k}: 0>r[t]={r[t]}')
-                    self.assertAlmostEqual(s[t]+i[t]+r[t],1, msg= f'fail when t={t}, b={b}, k={k}: s+i+r={s[t]+i[t]+r[t]}')
+                    self.assertAlmostEqual(s[t]+i[t]+r[t],1, msg= f'failed when t={t}, b={b}, k={k}: s+i+r={s[t]+i[t]+r[t]}')
