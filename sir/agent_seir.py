@@ -1,60 +1,70 @@
-class Person():
+import numpy as np
+from agent_pop import Population
+from typing import Union
+
+
+class PopulationSEIR(Population):
     """
-    This module implements an agent-based model.
-    It defines a class which represents a person, with an internal state which is
-    one of S, I or R.
-
-    By default, a person is susceptible.  They become infected using the infect method,
-    and recovered by recover method.
-
+    This module improves an agent-based model by adding an additional status E
+    An susceptible individual becomes exposed if he is infected,
+    but not yet infectious.
     """
 
-    def __init__(self):
-        self.S = True # default setting not I not R -> person is susceptible
-        self.E = False
-        self.I = False  # if I = True, the person has infected
-        self.R = False  # if R = True, the person has recovered and cannot be infected
+    def __init__(self, N, e0, i0):
+        super().__init__(N, i0)
+        ei_ind = np.random.choice(N, round((e0+i0)*N), replace=False)
+        cutoff = round(len(ei_ind)*e0/(e0+i0))
+        self.s_ind = np.setdiff1d(np.arange(N), ei_ind, True)
+        self.e_ind = ei_ind[:cutoff]
+        self.i_ind = ei_ind[cutoff:]
+        self.r_ind = np.array([])
 
-    def is_infected(self):
+    def expose(self, b: int):
         """
-        returns true if the person has infected
+        each infected individual contact b other individuals
+        if a susceptible individual is contacted, then he becomes exposed
         """
-        return self.I
+        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
+        new_e_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        self.s_ind = np.setdiff1d(self.s_ind, new_e_ind, True)
+        self.e_ind = np.concatenate((self.e_ind, new_e_ind))
 
-    def is_exposed(self):
-        return self.E
+    def infect(self, f: float):
+        """
+        f fraction of the exposed population become infectious each day
+        """
+        new_i_ind = self.e_ind[np.random.binomial(1, f, len(self.e_ind)) == 1]
+        self.e_ind = np.setdiff1d(self.e_ind, new_i_ind, True)
+        self.i_ind = np.concatenate((self.i_ind, new_i_ind))
 
-    def is_recovered(self):
-        """
-        returns true if the person has recovered
-        """
-        return self.R
+    def count_seir(self):
+        return np.array([len(self.s_ind), len(self.e_ind), len(self.i_ind), len(self.r_ind)])/self.N
 
-    def contact(self):
+    def simulation(self, T: int, b: int, f: float, k: float):
         """
-        among all contacts, susceptible person get exposed
+        simulate the spread for T days
+        return:
+            sirs, shape (T, 4), record of daily s,e,i,r
         """
-        if self.S:
-            self.exposed()
+        seirs = np.array(self.count_seir())
+        for t in range(T):
+            self.expose(b)
+            self.infect(f)
+            self.recover(k)
+            seirs = np.vstack((seirs, self.count_seir()))
 
-    def exposed(self):
-        self.S = False
-        self.E = True
+        return seirs
 
-    def infect(self):
-        """
-        exposed individuals become infectious
-        """
-        if not self.E:
-            raise ValueError("only exposed person can befome infectious")
-        self.I = True
-        self.E = False
 
-    def recover(self):
-        """
-        infectious persons get recovered and cannot get infected later
-        """
-        if not self.I:
-            raise ValueError("only infectious persons can recover")
-        self.R = True
-        self.I = False
+
+if __name__ == 'main':
+    import pandas as pd
+    from time import time
+
+    pop = PopulationSEIR(1000, 0.002, 0.005)
+    t0 = time()
+    seirs = pop.simulation(T=100, b=9, f=0.3, k=0.1)
+    t1 = time()
+    t1 - t0
+
+    pd.DataFrame(seirs, columns=['S','E','I','R']).plot(legend=True)

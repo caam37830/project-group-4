@@ -1,53 +1,61 @@
-class Person():
+import numpy as np
+from agent_pop import Population
+from typing import Union
+
+
+class PopulationVarparm(Population):
     """
-    This module implements an agent-based model.
-    It defines a class which represents a person, with an internal state which is
-    one of S, I or R.
-
-    By default, a person is susceptible.  They become infected using the infect method,
-    and recovered by recover method.
-
+    This module improves an agent-based model with the following variation of parameters
+        p: a susceptible individual becomes infected with probability p
+            when he contacts an infectious individual. can change along time
+        b: contacts per day can change along time
+        k: recover fraction can change along time
     """
 
-    def __init__(self):
-        self.S = True # default setting not I not R -> person is susceptible
-        self.I = False  # if I = True, the person has infected
-        self.R = False  # if R = True, the person has recovered and cannot be infected
-
-    def is_infected(self):
-        """
-        returns true if the person has infected
-        """
-        return self.I
-
-    def is_recovered(self):
-        """
-        returns true if the person has recovered
-        """
-        return self.R
-
-    def infect(self):
-        """
-        susceptible person get infected
-        """
-        if not self.S:
-            raise ValueError("only susceptible person can befome infectious")
-        self.I = True
-        self.S = False
+    def __init__(self, N, i0):
+        super().__init__(N, i0)
 
 
-    def contact(self, p):
+    def infect(self, b: int, p: float = 1):
         """
-        among all contacts, susceptible person get infected with probability p
+        each infected individual contact b other individuals
+        if a susceptible individual is contacted, then he becomes infected with probability p
         """
-        if self.S and np.random.rand(1) < p:
-            self.infect()
+        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
+        s_contact_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        new_i_ind = s_contact_ind[np.random.binomial(1, p, len(s_contact_ind)) == 1]
+        self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
+        self.i_ind = np.concatenate((self.i_ind, new_i_ind))
 
-    def recover(self):
+
+    def simulation(self, T: int, b: Union[int, np.array], k: Union[float, np.array], p: Union[float, np.array]):
         """
-        infectious persons get recovered and cannot get infected later
+        simulate the spread for T days
+        return:
+            sirs, shape (T, 3), record of daily s,i,r
         """
-        if not self.I:
-            raise ValueError("only infectious persons can recover")
-        self.R = True
-        self.I = False
+        sirs = np.array(self.count_sir())
+        if type(b) == int:
+            b = [b] * T
+        if type(k) == float:
+            k = [k] * T
+        if type(p) == float:
+            p = [p] * T
+        for t, b_, k_, p_ in zip(range(T),b,k,p):
+            self.infect(b_, p_)
+            self.recover(k_)
+            sirs = np.vstack((sirs, self.count_sir()))
+
+        return sirs
+
+
+if __name__ == 'main':
+    import pandas as pd
+    pop = PopulationVarparm(1000, 0.001)
+
+    sirs = pop.simulation(T=100,
+                        b=[10]*10 + [5]*10 + [1]*80, # social distancing
+                        k=[0.01]*50 + [0.1]*30 + [0.5]*20, # drug developed and distributed
+                        p=[0.1]*20 + [0.8]*80) # mutation, become more infectious
+    pd.DataFrame(sirs, columns=['S','I','R']).plot(legend=True)
+    print(sirs[:, 1])
