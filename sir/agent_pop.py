@@ -2,75 +2,77 @@ import numpy as np
 from typing import Union
 
 class Population():
+    """
+    This module implements an agent-based model.
+    It defines a class which represents a population of size N, with an internal state which is
+    one of S, I or R.
+
+    By default, a person is susceptible.  They become infected using the infect method,
+    and recovered by recover method.
+    """
+
     def __init__(self, N: int, i0: float):
         """
-        N: int, population size
-        i0: initial infectious fraction i0 in (0,1).
-        state: an array of integers 0, 1, 2, corresponds to status s, i, r
+        input:
+            N: int, population size
+            i0: initial infectious fraction i0 in (0,1).
+        values:
+            store S, I, R individuals indexes in i_ind, s_ind, and r_ind.
         """
         self.N = N
-        self.state = np.zeros(N)
         if not 0 < i0 < 1:
             raise ValueError('initial infectious fraction i0 should be in (0,1)')
-        i_ind = np.random.choice(N, round(i0*N), replace=False)
-        self.state[i_ind] = 1
-
+        self.i_ind = np.random.choice(N, round(i0*N), replace=False)
+        self.s_ind = np.setdiff1d(np.arange(N), self.i_ind, True)
+        self.r_ind = np.array([])
 
     def infect(self, b: int):
         """
         each infected individual contact b other individuals
         if a susceptible individual is contacted, then he becomes infected
         """
-        I = sum(self.state == 1)
-        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in range(I)]).flatten()
-        s_ind = np.argwhere(self.state == 0).flatten()
-        new_i_ind = s_ind[np.isin(s_ind,contact)]
-        self.state[new_i_ind] = 1
+        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
+        new_i_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
+        self.i_ind = np.concatenate((self.i_ind, new_i_ind))
+
 
     def recover(self, k: float):
         """
         k fraction of the infectious population recover
         """
-        i_ind = np.argwhere(self.state == 1).flatten()
-        self.state[i_ind] = np.where(np.random.rand(len(i_ind))<k, 2, self.state[i_ind])
+        new_r_ind = self.i_ind[np.random.binomial(1, k, len(self.i_ind)) == 1]
+        self.i_ind = np.setdiff1d(self.i_ind, new_r_ind, True)
+        self.r_ind = np.concatenate((self.r_ind, new_r_ind))
 
 
     def count_sir(self):
-        s = sum(self.state == 0)/self.N
-        i = sum(self.state == 1)/self.N
-        r = sum(self.state == 2)/self.N
-        return np.array([s,i,r])
+        return np.array([len(self.s_ind), len(self.i_ind), len(self.r_ind)])/self.N
 
 
-    def simulation(self, b: Union[int, np.array], k: Union[float, np.array], T: int):
+    def simulation(self, T: int, b: int, k: float):
         """
         simulate the spread for T days
         return:
             sirs, shape (T, 3), record of daily s,i,r
         """
-
         sirs = np.array(self.count_sir())
-        if type(b) == int and type(k) == float: # basic case
-            for t in range(T):
-                self.infect(b)
-                self.recover(k)
-                sirs = np.vstack((sirs, self.count_sir()))
-        else:
-            if type(b) == int:
-                b = [b] * T
-            if type(k) == float:
-                k = [k] * T
-            for b_, k_, t in zip(b,k,range(T)):
-                self.infect(b_)
-                self.recover(k_)
-                sirs = np.vstack((sirs, self.count_sir()))
+        for t in range(T):
+            self.infect(b)
+            self.recover(k)
+            sirs = np.vstack((sirs, self.count_sir()))
 
         return sirs
 
 
 if __name__ == 'main':
-    pop = Population(1000, 0.1)
-    sirs = pop.simulation(b=[9]*100, k=0.01, T=100)
     import pandas as pd
+    from time import time
+
+    pop = Population(10000, 0.001)
+    t0 = time()
+    sirs = pop.simulation(T=100, b=9, k=0.1)
+    t1 = time()
+    t1 - t0
+
     pd.DataFrame(sirs, columns=['S','I','R']).plot(legend=True)
-    print(sirs)
