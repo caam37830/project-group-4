@@ -20,6 +20,7 @@ phase transition boundary 也就是midterm checkpoint里i随b,k变化的phase di
 和midterm一样,
   - total population N = ?
   - simulation days T = ?
+    - use T that is used to chose b,k??
   - initial number of infected individuals I0 = ?
 
 
@@ -98,5 +99,6 @@ ode里不好对每个t设置设置不同的b，k。还是用piece-wise constant�
   - continue on pde
 
 dennis
-  - 写agent2.py，用一个attribute state表示SIR状态
+  - ✅写agent2.py，用一个attribute state表示SIR状态
+    - 实际上写了agent_pop.py, 新建了一个class Population() , 避免了agent()的loop和内存占用。速度应该会快一点
   - 写三个variations的simulation
