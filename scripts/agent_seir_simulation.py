@@ -14,7 +14,7 @@ def count_seir(pop):
     S = len(pop) - E - I - R
     return np.array([S, E, I, R])
 
-def plot_sim(result, b, k, ax, accessory=True):
+def plot_sim(result, a, b, k, ax, accessory=True):
     """
     plot the fraction of people in each group over time
     result = np.array([s, e, i, r])
@@ -24,12 +24,12 @@ def plot_sim(result, b, k, ax, accessory=True):
     ax.plot(result[2], label="Infectious")
     ax.plot(result[3], label="Removed")
     if accessory:
-        ax.set_title("b={:.3f}, k={:.3f}".format(b, k))
+        ax.set_title("a={:.3f}, b={:.3f}, k={:.3f}".format(a, b, k))
         ax.set_xlabel("time")
         ax.set_ylabel("fraction of people")
         ax.legend()
 
-def run_sim(b, k, N, T):
+def run_sim(a, b, k, N, T):
     """
     return the number of people in each group from time 0 to time T
     """
