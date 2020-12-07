@@ -106,7 +106,25 @@ dennis
       - N=10000的图更granular，但耗时
         - 用N=1000做草图
         - 确定形态后，用N=10000出图
+      - findings
+        - social distancing can flatten the curve
+          - postpone peak arrival
+          - lowers peak value, but not significant
+          - peak value also depends on k
+        - drug effect is significant to reduce i
+        - mutation increases i,
+          - mutation in early stage is a disaster, high peak may hit hospital's capacity
+          - in later stage is ok, since r is high, s is low
       - Optional:
-        - 保留最开始的参数，从变化effect开始计算
-        - 给图中加竖直线标注
+        - 保留最开始的sir结果，从effect生效时间开始simlate后面的simulation
+          - sirs2 = sirs, sirs2[t:] = pop.simulation()
+        - 做 pre-peak, post-peak
+        - 给图中加竖直线标注ax.axvline(group_mean, ls='--', color='r')
         - 增加T
+    - agent_seir
+      - 选b=1, k=0.01, 画plot_f_effect,
+        - 每条线是i(t), 对应一个f，    color scale
+      - 2-D phase diagram
+        - pairwise
+      - optional:
+        - 3-D phase diagram in html

@@ -1,123 +1,114 @@
-
-import sys, os
-sys.path.append(os.getcwd())
-from sir.agent_seir import *
-
+import sys
+sys.path.append('../sir')
+from agent_seir import PopulationSEIR
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-from numpy.random import randint, rand, choice
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from mpl_toolkits.mplot3d import Axes3D
+import itertools as it
+import matplotlib.ticker as mticker
 
-def count_seir(pop):
-    E = sum(p.is_exposed() for p in pop)
-    I = sum(p.is_infected() for p in pop)
-    R = sum(p.is_recovered() for p in pop)
-    S = len(pop) - E - I - R
-    return np.array([S, E, I, R])
-
-def plot_sim(result, a, b, k, ax, accessory=True):
-    """
-    plot the fraction of people in each group over time
-    result = np.array([s, e, i, r])
-    """
-    ax.plot(result[0], label="Susceptible")
-    ax.plot(result[1], label="Exposed")
-    ax.plot(result[2], label="Infectious")
-    ax.plot(result[3], label="Removed")
-    if accessory:
-        ax.set_title("a={:.3f}, b={:.3f}, k={:.3f}".format(a, b, k))
-        ax.set_xlabel("time")
-        ax.set_ylabel("fraction of people")
-        ax.legend()
-
-def run_sim(a, b, k, N, T):
-    """
-    return the number of people in each group from time 0 to time T
-    """
-    pop = [Person() for i in range(N)] # our population
-    infected = choice(range(N), size=int(N*0.001), replace=False) # 0.1% infected at T=0
-    for i in infected:
-        pop[i].infect()
-    counts_seir = count_seir(pop)
-
-    for t in range(T):
-        infected = [i for i in range(N) if pop[i].is_infected()]
-        for i in infected:
-            # each infectious person contact b people, including S,I,R
-            contacts = choice(list(set(range(N))-set([i])), size=b, replace=False)
-            for j in contacts:
-                pop[j].contact() # if S, then get infected
-            # k fraction of the infectious population recover
-            if rand() < k:
-                pop[i].recover()
-
-        exposed = [i for i in range(N) if pop[i].is_exposed()]
-        for i in exposed:
-            if rand() < a:
-                pop[i].infect()
-
-        # append SEIR counts at time t
-        counts_seir = np.vstack((counts_seir, count_seir(pop)))
-    return counts_seir
-
-
-# plot how s, i, and r change over the length of the simulation
-#for each single case
-# sim1 = run_sim(8,0.01,1000,100) # shape = (T+1, 3), columns are S, I, R
-# plt.plot(sim1[:,0],label = "Susceptible")
-# plt.plot(sim1[:,1],label = "Infected")
-# plt.plot(sim1[:,2],label = "Recovered")
-# plt.legend()
-# plt.show()
-
-# simulation for bs and ks
+# global hyper parameters
+N = 10000
 T = 100
-N = 1000
-#for facet plot
-f_bs = np.arange(1, 11, 2, dtype=np.int64)
-f_ks = np.logspace(-2, 0, 5)
-f_results = np.zeros((len(f_bs), len(f_ks), T+1, 3)) # empty container
+e0 = i0 = 0.001
+b, k = 1, 0.01
 
-for i, b in enumerate(f_bs):
-    for j, k in enumerate(f_ks):
-        counts_seir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
-        f_results[i,j,...] = counts_seir / N # convert to fractions, store in results
 
-# facet plot
-f, ax = plt.subplots(len(f_bs), len(f_ks), figsize=(20, 16), sharex=True, sharey=True)
-for i, b in enumerate(f_bs):
-     for j, k in enumerate(f_ks):
-        plot_sim(f_results[i,j].T, b, k, ax[i,j], accessory=False)
+# check how s,e,i,r change with f
+fs = np.logspace(-2,0,10)
+result = [] # (fs, T, seir)
+for f in fs:
+    pop = PopulationSEIR(N, e0, i0)
+    seirs = pop.simulation(T=T, b=b, f=f, k=k)
+    result.append(seirs)
 
-for i, b in enumerate(f_bs):
-    ax[i, 0].set_ylabel("b = {}".format(b))
-for j, k in enumerate(f_ks):
-    ax[0, j].set_title("k = {:.2f}".format(k))
-ax[0, -1].legend()
-f.text(0.5, 0.95, 'Facet Diagram for Different Parameter Values', ha='center', fontsize=18)
-f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
-f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
-# plt.savefig("output/agent_facet_plot.png")
+result = np.asarray(result)
+result.shape
 
-# phase diagram
-p_bs = np.arange(1, 11, dtype=np.int64)
-p_ks = np.logspace(-2, 0, 10)
-p_results = np.zeros((len(p_bs), len(p_ks), T+1, 3)) # empty container
+def plot_lines(ax, df, cmap, start=0.2, end=1):
+    """
+    plot simulated result with various value of f
+    input
+        df: shape (len(fs),T), every row is, e.g. i(t), for certain f
+        cmap: an plt.cm colormap object, see https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+        start, end: scale location in color map
+    """
+    cols = [cmap(x) for x in np.linspace(start, end, len(df))]
+    for i, col in enumerate(cols):
+        ax.plot(df[i,:], c=col)
+    # ax.set_xlabel('Time')
+    # ax.set_ylabel('Fraction')
+    return ax
 
-for i, b in enumerate(p_bs):
-    for j, k in enumerate(p_ks):
-        counts_seir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
-        p_results[i,j,...] = counts_seir / N
-# phase diagram at time t
-#t = 10
-f, ax = plt.subplots(1, 3, figsize=(15,5))
-for i, t in enumerate([5, 10, 50]):
-    m = ax[i].imshow(p_results[::-1,:,t,1],
-                     extent=[np.min(p_ks), np.max(p_ks), np.min(p_bs), np.max(p_bs)],
-                     vmin=0, vmax=1)
-    ax[i].axis('auto')
-    ax[i].set_title("t = {}".format(t))
-f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
-f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
-f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
-f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-# plt.savefig("output/agent_phase_plot.png", dpi=200)
+    # # add colorbar
+    # divider = make_axes_locatable(plt.gca())
+    # ax_cb = divider.new_horizontal(size="5%", pad=0.05)
+    # cb1 = mpl.colorbar.ColorbarBase(ax_cb, cmap=cmap, orientation='vertical')
+    # plt.gcf().add_axes(ax_cb)
+
+fig, ax = plt.subplots(2,2, sharex='all', sharey='all')
+ax[0,0] = plot_lines(ax[0,0], result[:,:,0], mpl.cm.Blues)
+ax[0,1] = plot_lines(ax[0,1], result[:,:,1], mpl.cm.Purples)
+ax[1,0] = plot_lines(ax[1,0], result[:,:,2], mpl.cm.OrRd)
+ax[1,1] = plot_lines(ax[1,1], result[:,:,3], mpl.cm.Greens)
+fig.text(0.5, 0.04, 'Time', va='center', ha='center')
+fig.text(0.04, 0.5, 'Fraction', va='center', ha='center', rotation='vertical')
+plt.savefig('../output/agent_seir_by_f.png', dpi=300)
+
+
+# 3-D Phase diagram in PDF
+
+def simulate(bs, ks, fs, T=T, N=N, e0=e0, i0=i0):
+    """
+    return
+        bfks: (bs*ks*fs, 3)
+        itss: (bs*ks*fs, T), record of i(t) for every (b,f,k) setting
+    """
+    bfks0 = []
+    itss0 = []
+
+    for b,f,k in it.product(bs, fs, ks):
+        pop = PopulationSEIR(N, e0, i0)
+        seirs = pop.simulation(T=T, b=b, f=f, k=k)
+        its = seirs[:, 2] # i(t)
+        bfks0.append([b,f,k])
+        itss0.append(its)
+
+    bfks = np.asarray(bfks0).reshape(len(itss0), 3)
+    itss = np.asarray(itss0) # nsim * (T+1)
+    return bfks, itss
+
+def plot_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    scat = ax.scatter3D(bfks[:,0], np.log(bfks[:,1]), np.log(bfks[:,2]),
+                        c=its, cmap=cmap, vmin=0, vmax=1, alpha=0.5, linewidths=0)
+
+    ax.set_xlabel('b')
+    ax.set_ylabel('f')
+    ax.set_zlabel('k')
+    def log_tick_formatter(val, pos=None):
+        return "{:.2f}".format(np.exp(val))
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    fig.colorbar(scat, pad=0.2, shrink=0.8)
+    if title:
+        plt.title(title)
+    if save_as:
+        plt.savefig(f'../output/agent_seir_{save_as}.png', dpi=300)
+
+bs = range(1,7)
+ks = np.logspace(-2,-0.5,7)
+fs = np.logspace(-2,0,7)
+T = 100
+bfks, itss = simulate(bs, ks, fs, T=100)
+
+plot_3d(bfks, itss[:,50], title=f't = {50}', save_as='bfk_it')
+
+
+for t in range(T):
+    plot_3d(bfks, itss[:,t], title=f't = {t}')
+    plt.show()

@@ -56,7 +56,6 @@ class PopulationSEIR(Population):
         return seirs
 
 
-
 if __name__ == 'main':
     import pandas as pd
     from time import time
