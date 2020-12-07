@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def plot_sir(sirs, sirs2=None, save_as=''):
+def plot_sir(sirs, sirs2=None, save_as=None):
     T = len(sirs)
     fig, ax = plt.subplots()
     ax.plot(range(T), sirs[:,0], label = r'$s$')
