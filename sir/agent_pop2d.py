@@ -6,22 +6,22 @@ import pandas as pd
 
 class Population2d():
     """
-    This module implements an 2d agent-based model.
+    This module implements a 2d agent-based model.
     We consider the spatial position and movement of the agents
-    An infectious individual can infect his neighbors with certain distance
+    An infectious individual can infect his neighbors within certain distance
     """
     def __init__(self, N: int, I: int):
         self.N = N
-        self.i_info = np.random.rand(I, 3)
+        self.i_info = np.random.rand(I, 3) # random position
         self.s_info = np.random.rand(N-I, 3)
-        self.i_info[:,0] = np.random.choice(N, I, replace=False)
+        self.i_info[:,0] = np.random.choice(N, I, replace=False) # first column is index
         self.s_info[:,0] = np.setdiff1d(np.arange(N), self.i_info[:,0], True)
         self.r_info = np.array([])
 
 
     def move(self, p):
         """
-        each agent move a step of length p in a random direction
+        each agent moves a step of length p in a random direction
         if the new position is outside the unit squaure, use the old position
         """
         for info in [self.i_info, self.s_info, self.r_info]:
@@ -39,11 +39,11 @@ class Population2d():
 
     def infect(self, q):
         """
-        an infectious individual infect his susceptible neighbors within distance q
-        ** Remark: tree.query_ball_point() return indexes in the tree,
+        an infectious individual infects his susceptible neighbors within distance q
+        ** Remark: tree.query_ball_point() return indexes in the tree (position matrix X),
                 not indexes in the population
         """
-        X = np.vstack((self.s_info,self.i_info))
+        X = np.vstack((self.s_info,self.i_info)) # no need to consider recovered
         if X.size == 0:
             # print('all individuals are recovered')
             return
@@ -148,12 +148,9 @@ class Population2d():
         return SIRs, np.array(ts)
 
 
-
-
-
 if __name__ == 'main':
 
-    pop = Population2d(1000, 1)
+    pop = Population2d(10000, 1)
     t0 = time()
     SIRs, ts = pop.simulation(T=100, p=0.2, q=0.1, k=0.1)
     t1 = time()
