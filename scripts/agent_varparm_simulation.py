@@ -1,17 +1,8 @@
+import sys
+sys.path.append('../sir')
+from agent_varparm import PopulationVarparm
 
-import sys, os
-sys.path.append(os.getcwd())
-from sir.agent_varparm import *
 
-import numpy as np
-import matplotlib.pyplot as plt
-from numpy.random import randint, rand, choice
-
-def count_sir(pop):
-    I = sum(p.is_infected() for p in pop)
-    R = sum(p.is_recovered() for p in pop)
-    S = len(pop) - I - R
-    return np.array([S,I,R])
 
 def plot_sim(result, b, k, ax, accessory=True):
     """
@@ -27,42 +18,13 @@ def plot_sim(result, b, k, ax, accessory=True):
         ax.set_ylabel("fraction of people")
         ax.legend()
 
-def run_sim(B, K, N, T, p):
-    """
-    B: array of parameter b along time 
-    K: array of parameter k along time
-    return the number of people in each group from time 0 to time T
-    """
-    pop = [Person() for i in range(N)] # our population
-    infected = choice(range(N), size=int(N*0.001), replace=False) # 0.1% infected at T=0
-    for i in infected:
-        pop[i].infect()
-    counts_sir = count_sir(pop)
+pop = PopulationVarparm(1000, 0.001)
 
-    for b, k, t in zip(B, K, range(T)):
-        infected = [i for i in range(N) if pop[i].is_infected()]
-        for i in infected:
-            # each infectious person contact b people, including S,I,R
-            contacts = choice(list(set(range(N))-set([i])), size=b, replace=False)
-            for j in contacts:
-                pop[j].contact(p) # if S, then get infected w.p. p
-            # k fraction of the infectious population recover
-            if rand() < k:
-                pop[i].recover()
+sirs = pop.simulation(T=100,
+                    b=[10]*10 + [5]*10 + [1]*80, # social distancing
+                    k=[0.01]*50 + [0.1]*30 + [0.5]*20, # drug developed and distributed
+                    p=[0.1]*20 + [0.8]*80) # mutation, become more infectious
 
-        # append SIR counts at time t
-        counts_sir = np.vstack((counts_sir, count_sir(pop)))
-    return counts_sir
-
-
-# plot how s, i, and r change over the length of the simulation
-#for each single case
-# sim1 = run_sim(8,0.01,1000,100) # shape = (T+1, 3), columns are S, I, R
-# plt.plot(sim1[:,0],label = "Susceptible")
-# plt.plot(sim1[:,1],label = "Infected")
-# plt.plot(sim1[:,2],label = "Recovered")
-# plt.legend()
-# plt.show()
 
 # simulation for bs and ks
 T = 100
