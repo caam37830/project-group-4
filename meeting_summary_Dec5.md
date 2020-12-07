@@ -102,3 +102,11 @@ dennis
   - ✅写agent2.py，用一个attribute state表示SIR状态
     - 实际上写了agent_pop.py, 新建了一个class Population() , 避免了agent()的loop和内存占用。速度应该会快一点
   - 写三个variations的simulation
+    - ✅agent_varparm
+      - N=10000的图更granular，但耗时
+        - 用N=1000做草图
+        - 确定形态后，用N=10000出图
+      - Optional:
+        - 保留最开始的参数，从变化effect开始计算
+        - 给图中加竖直线标注
+        - 增加T
