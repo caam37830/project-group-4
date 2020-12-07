@@ -40,6 +40,8 @@ class Population2d():
     def infect(self, q):
         """
         an infectious individual infect his susceptible neighbors within distance q
+        ** Remark: tree.query_ball_point() return indexes in the tree,
+                not indexes in the population
         """
         X = np.vstack((self.s_info,self.i_info))
         if X.size == 0:
@@ -48,11 +50,46 @@ class Population2d():
         tree = KDTree(X[:,1:]) # pos of S, I
         contact_tree_inds = tree.query_ball_point(self.i_info[:,1:], q) # a list of lists of indices
         contact_tree_inds = sum(contact_tree_inds, []) # flatten a list of lists
-        contact_inds = X[:,0][contact_tree_inds]
-        s_contact_slice = np.isin(self.s_info[:,0], contact_inds)
-        new_i_info = self.s_info[s_contact_slice]
-        self.s_info = self.s_info[~s_contact_slice]
+        contact_inds = X[:,0][contact_tree_inds] # all indivisuals that contact with all I
+        s_contact_slice = np.isin(self.s_info[:,0], contact_inds) # whether S is in this list
+        new_i_info = self.s_info[s_contact_slice] # if yes, then becomes infected
+        self.s_info = self.s_info[~s_contact_slice] # otherwise remain in susceptible status
         self.i_info = np.concatenate((self.i_info, new_i_info))
+
+
+    def infect_opt(self, q):
+        """
+        When there are many infectious individuals, the tree query by I becomes time consuming
+        We want to optimize this fuction in such cases.
+        We can query by susceptible individuals instead, whose population size is smaller
+        If a susceptible person's neighbors include any I, then he becomes infected.
+        """
+        X = np.vstack((self.s_info,self.i_info))
+        if X.size == 0:
+            # print('all individuals are recovered')
+            return
+        tree = KDTree(X[:,1:]) # pos of S, I
+        if len(self.s_info) > len(self.i_info): # query by I is more efficient
+            contact_lists = tree.query_ball_point(self.i_info[:,1:], q) # a list of lists of indices
+            contact_tree_inds = sum(contact_lists, []) # flatten a list of lists
+            contact_inds = X[:,0][contact_tree_inds]
+            s_contact_slice = np.isin(self.s_info[:,0], contact_inds)
+            new_i_info = self.s_info[s_contact_slice]
+            self.s_info = self.s_info[~s_contact_slice]
+        else: # query by S is more efficient
+            # print('optimizing')
+            contact_lists = tree.query_ball_point(self.s_info[:,1:], q) # a list of lists of indices
+            i_tree_inds = range(len(self.s_info), len(X))
+            new_i_tree_inds = []
+            for s_ind, contact_list in enumerate(contact_lists): # for each S
+                if np.any(np.isin(i_tree_inds, contact_list)): # if any I is in an S's neighbor
+                    new_i_tree_inds.append(s_ind) # then this S becomes infected
+            new_i_inds = X[:,0][new_i_tree_inds]
+            s_contact_slice = np.isin(self.s_info[:,0], new_i_inds, True)
+            new_i_info = self.s_info[s_contact_slice]
+            self.s_info = self.s_info[~s_contact_slice]
+        self.i_info = np.concatenate((self.i_info, new_i_info))
+
 
     def recover(self, k):
         if self.i_info.size == 0:
@@ -96,7 +133,7 @@ class Population2d():
             self.move(p)
             t1 = time()
 
-            self.infect(q)
+            self.infect_opt(q)
             t2 = time()
 
             self.recover(k)
@@ -118,7 +155,7 @@ if __name__ == 'main':
 
     pop = Population2d(1000, 1)
     t0 = time()
-    SIRs, ts = pop.simulation(T=10, p=0.2, q=0.1, k=0.1, plot_time_interval=1)
+    SIRs, ts = pop.simulation(T=100, p=0.2, q=0.1, k=0.1)
     t1 = time()
     t1 - t0
 
