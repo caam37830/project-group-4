@@ -123,3 +123,9 @@ dennis
         - pairwise
       - optional:
         - 3-D phase diagram in html
+
+    - ✅ ode_seir
+      - effect of f
+        - large f is equivalent to sir
+        - small f flattens i(t), many stuck in state e
+      -
