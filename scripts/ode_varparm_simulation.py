@@ -1,99 +1,91 @@
-"""
-Because we're investigating how a new disease spreads, you can start with
-a small number of infectious individuals (e.g. 0.1% of the population)
-for both the continuous and discrete simulations, with the remainder of
-the population in the susceptible category.
-
-# dennis: let's use N = 1000 and initial infectious fraction = 0.1%
-
-Your simulations should produces some plots of how s, i, and r change over
-the length of the simulation for a couple different choices of k and b.
-
-# dennis: include title, axis labels, legend. can try some extreme values of k and b
-
-You should also investigate the qualitative behavior of the simulations based on
-the parameters b and k in a phase diagram. For instance, how does the
-total percentage of the population infected at some point in the simulation
-depend on these parameters? Are there parameter regimes where i quickly goes
-to 0? Are there parameter regimes where everyone is eventually infected?
-
-# dennis: see https://caam37830.github.io/book/09_computing/agent_based_models.html
-
-"""
-
-import sys, os
-sys.path.append(os.getcwd())
-from sir.ode import *
-
+import sys
+sys.path.append('../sir')
+from ode_varparm import ode_simulation
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+import copy
 
-def plot_sim(result, b, k, ax, accessory=True):
+
+# hyper parm
+N = 1000
+i0 = 0.001
+T = 100
+
+def plot_sir(sirs, sirs2=None, event_time=None, save_as=None):
     """
-    plot the fraction of people in each group over time
-    result = np.array([s, i, r])
+    event_time: when sirs2 start to differ from sirs
     """
-    ax.plot(result[0], label="Susceptible")
-    ax.plot(result[1], label="Infectious")
-    ax.plot(result[2], label="Removed")
-    if accessory:
-        ax.set_title("b={:.3f}, k={:.3f}".format(b, k))
-        ax.set_xlabel("time")
-        ax.set_ylabel("fraction of people")
-        ax.legend()
+    T = len(sirs)
+    fig, ax = plt.subplots()
+    ax.plot(range(T), sirs[:,0], label = r'$s$')
+    ax.plot(range(T), sirs[:,1], label = r'$i$')
+    ax.plot(range(T), sirs[:,2], label = r'$r$')
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Fraction')
 
-def run_sim(i0, T, bs, ks):
-    """
-    return the fraction of people in each group from time 0 to time T
-    """
-    results = np.zeros((len(bs), len(ks), 3, int(T)))
-    for i, b in enumerate(bs):
-        for j, k in enumerate(ks):
-            results[i,j,...] = np.array(ode_model(i0, T, b, k))
-    return results
+    if sirs2 is not None:
+        ax.plot(range(event_time,T), sirs2[:,0], label = r'$s^\prime$', c='C0', linestyle='--')
+        ax.plot(range(event_time,T), sirs2[:,1], label = r'$i^\prime$', c='C1', linestyle='--')
+        ax.plot(range(event_time,T), sirs2[:,2], label = r'$r^\prime$', c='C2', linestyle='--')
 
-# an example
-N = 10000; T = 100; i0 = 0.001
-b = 1; k = 0.1
-f, ax = plt.subplots()
-plot_sim(ode_model(i0, T, b, k), b, k, ax)
-# plt.show()
+    fig.legend(bbox_to_anchor=(1,0.5), loc="center left", borderaxespad=0)
 
-# facet plot
-bs = np.arange(1, 11, 2, dtype=np.int64)
-ks = np.logspace(-2, 0, 5)
-results_small = run_sim(i0, T, bs, ks)
+    if save_as:
+        fig.savefig(f'../output/{save_as}.png', dpi=300, bbox_inches='tight')
 
-f, ax = plt.subplots(len(bs), len(ks), figsize=(20, 16), sharex=True, sharey=True)
-for i, b in enumerate(bs):
-    for j, k in enumerate(ks):
-        plot_sim(results_small[i,j], b, k, ax[i,j], accessory=False)
 
-for i, b in enumerate(bs):
-    ax[i,0].set_ylabel("b = {}".format(b))
-for j, k in enumerate(ks):
-    ax[0,j].set_title("k = {:.2f}".format(k))
-ax[0,-1].legend()
-f.text(0.5, 0.95, 'Facet Diagram for Different Parameter Values', ha='center', fontsize=18)
-f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
-f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
-# plt.savefig("output/ode_facet_plot.png")
+# base case
+b, k, p = 10, 0.01, 0.1
+power = 1.5
 
-# phase diagram at time t
-bs = np.arange(1, 11, dtype=np.int64)
-ks = np.logspace(-2, 0, 10)
-results_large = run_sim(i0, T, bs, ks)
+sirs = ode_simulation(T=T, b=b*p**power, k=k, i0=i0)
+plot_sir(sirs, save_as='ode_varparm_base_case')
 
-t = 10
-f, ax = plt.subplots(1, 3, figsize=(15,5))
-for i, t in enumerate([5, 10, 50]):
-    m = ax[i].imshow(results_large[::-1,:,1,t],
-                     extent=[np.min(ks), np.max(ks), np.min(bs), np.max(bs)],
-                     vmin=0, vmax=1)
-    ax[i].axis('auto')
-    ax[i].set_title(f"t = {t}")
-f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
-f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
-f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
-f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-# plt.savefig("output/ode_phase_plot.png", dpi=200)
+# social distancing
+bprds = [5, 25, 70]
+bs = [10, 3, 1]
+sirs = ode_simulation(T=bprds[0], b=bs[0]*p**power, k=k, i0=i0)
+sirs_dist = copy.copy(sirs[-1])
+sirs_dist = sirs_dist[np.newaxis, :]
+for prd, b_ in zip(bprds[1:], bs[1:]):
+    sirs = np.vstack((sirs, ode_simulation(T=prd, b=bs[0]*p**power, k=k, y0=sirs[-1])[1:]))
+    sirs_dist = np.vstack((sirs_dist, ode_simulation(T=prd, b=b_*p**power, k=k, y0=sirs_dist[-1])[1:]))
+
+plot_sir(sirs, sirs_dist, bprds[0], 'ode_varparm_social_distancing')
+
+
+
+# drug developement and distribution
+kprds = [15, 55, 30]
+ks = [0.01, 0.1, 0.8]
+sirs = ode_simulation(T=kprds[0], b=b*p**power, k=ks[0], i0=i0)
+sirs_drug = copy.copy(sirs[-1])
+sirs_drug = sirs_drug[np.newaxis, :]
+for prd, k_ in zip(kprds[1:], ks[1:]):
+    sirs = np.vstack((sirs, ode_simulation(T=prd, b=b*p**power, k=ks[0], y0=sirs[-1])[1:]))
+    sirs_drug = np.vstack((sirs_drug, ode_simulation(T=prd, b=b*p**power, k=k_, y0=sirs_drug[-1])[1:]))
+
+plot_sir(sirs, sirs_drug, kprds[0], 'ode_varparm_drug')
+
+# virus mutation
+pprds = [20, 80]
+ps = [0.1, 0.8]
+sirs = ode_simulation(T=pprds[0], b=b*ps[0]**power, k=k, i0=i0)
+sirs_mut = copy.copy(sirs[-1])
+sirs_mut = sirs_mut[np.newaxis, :]
+for prd, p_ in zip(pprds[1:], ps[1:]):
+    sirs = np.vstack((sirs, ode_simulation(T=prd, b=b*ps[0]**power, k=k, y0=sirs[-1])[1:]))
+    sirs_mut = np.vstack((sirs_mut, ode_simulation(T=prd, b=b*p_**power, k=k, y0=sirs_mut[-1])[1:]))
+plot_sir(sirs, sirs_mut, pprds[0], 'ode_varparm_mutation')
+
+
+
+# all together
+sirs = ode_simulation(T=T, b=b*p**power, k=k, i0=i0)
+sirs_all = ode_simulation(T=1, b=bs[0]*ps[0]**power, k=ks[0], i0=i0)[0]
+sirs_all = sirs_all[np.newaxis, :]
+for b_,k_,p_ in zip(np.repeat(bs, bprds), np.repeat(ks, kprds), np.repeat(ps, pprds)):
+    sirs_all = np.vstack((sirs_all, ode_simulation(T=1, b=b_*p_**power, k=k_, y0=sirs_all[-1])[1:]))
+
+plot_sir(sirs, sirs_all, 0, 'ode_varparm_all')
