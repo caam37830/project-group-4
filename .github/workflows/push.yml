@@ -32,5 +32,5 @@ jobs:
         pytest test/test.py
     - name: Run script
       run: |
-        python scripts/ode_simulation.py
-        python scripts/agent_simulation.py
+        python sir/*.py
+        python scripts/*.py
