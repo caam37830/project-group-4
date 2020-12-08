@@ -30,9 +30,15 @@ class Population():
         """
         each infected individual contact b other individuals
         if a susceptible individual is contacted, then he becomes infected
+        for simplicity, we don't want to loop over each infected individuals, when I is large
+        consider from the population perspective,
+        the probability for an individual not to be contact by an I is (N-b)/(N-1)
+        so the probability for an individual not to be contact by all I's is [(N-b)/(N-1)]^len(I)
         """
-        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
-        new_i_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        # contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
+        # new_i_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        p_contact = 1 - ((self.N-1-b)/(self.N-1))**len(self.i_ind)
+        new_i_ind = np.random.choice(self.s_ind, round(p_contact*len(self.s_ind)), replace=False)
         self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
         self.i_ind = np.concatenate((self.i_ind, new_i_ind))
 
@@ -69,9 +75,9 @@ if __name__ == 'main':
     import pandas as pd
     from time import time
 
-    pop = Population(10000, 0.001)
+    pop = Population(1000, 0.001)
     t0 = time()
-    sirs = pop.simulation(T=100, b=9, k=0.1)
+    sirs = pop.simulation(T=100, b=5, k=0.5)
     t1 = time()
     t1 - t0
 

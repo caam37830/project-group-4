@@ -20,9 +20,11 @@ class PopulationVarparm(Population):
         """
         each infected individual contact b other individuals
         if a susceptible individual is contacted, then he becomes infected with probability p
+        the probability for an individual not to be contact by an I is (N-b)/(N-1)
+        so the probability for an individual not to be contact by all I's is [(N-b)/(N-1)]^len(I)
         """
-        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
-        s_contact_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        p_contact = 1 - ((self.N-1-b)/(self.N-1))**len(self.i_ind)
+        s_contact_ind = np.random.choice(self.s_ind, round(p_contact*len(self.s_ind)), replace=False)
         new_i_ind = s_contact_ind[np.random.binomial(1, p, len(s_contact_ind)) == 1]
         self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
         self.i_ind = np.concatenate((self.i_ind, new_i_ind))
@@ -58,4 +60,3 @@ if __name__ == 'main':
                         k=[0.01]*50 + [0.1]*30 + [0.5]*20, # drug developed and distributed
                         p=[0.1]*20 + [0.8]*80) # mutation, become more infectious
     pd.DataFrame(sirs, columns=['S','I','R']).plot(legend=True)
-    print(sirs[:, 1])
