@@ -8,7 +8,7 @@ from sir.agent_pop2d import Population2d
 from matplotlib.lines import Line2D
 
 
-def plot_lines(ax, df, label,cmap, start=0.2, end=1):
+def plot_lines(ax, df, cmap,label = None, start=0.2, end=1):
     """
     plot simulated result with various value of f
     input
@@ -18,7 +18,10 @@ def plot_lines(ax, df, label,cmap, start=0.2, end=1):
     """
     cols = [cmap(x) for x in np.linspace(start, end, len(df))]
     for i, col in enumerate(cols):
-        ax.plot(df[i,:], c=col, label = label[i])
+        if label != None:
+            ax.plot(df[i, :], c=col, label=label[i])
+        else:
+            ax.plot(df[i, :], c=col)
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Fraction')
     return ax
