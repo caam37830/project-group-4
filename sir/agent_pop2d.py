@@ -10,9 +10,18 @@ class Population2d():
     We consider the spatial position and movement of the agents
     An infectious individual can infect his neighbors within certain distance
     """
-    def __init__(self, N: int, I: int):
+    def __init__(self, N: int, I: int, i_pos='center'):
         self.N = N
-        self.i_info = np.random.rand(I, 3) # random position
+
+        if i_pos == 'random':
+            self.i_info = np.random.rand(I, 3) # random position
+        elif i_pos == 'corner':
+            self.i_info = np.zeros((I, 3))
+        elif i_pos == 'center':
+            self.i_info = np.full((I,3), 0.5)
+        else:
+            raise ValueError("Initial infected position must be 'random', 'center' or 'corner'")
+
         self.s_info = np.random.rand(N-I, 3)
         self.i_info[:,0] = np.random.choice(N, I, replace=False) # first column is index
         self.s_info[:,0] = np.setdiff1d(np.arange(N), self.i_info[:,0], True)
@@ -118,11 +127,12 @@ class Population2d():
         plt.show()
 
 
-    def simulation(self, T, p, q, k, plot_time_interval=None):
+    def simulation(self, T, p, q, k, plot_time_interval=None, return_time=False):
         """
         simulate the spread for T days
         return:
             SIRs, shape (T, 3), record of daily S, I, R
+            if record_time, also return the computation time of each step move(), infect(), recover()
         """
         SIRs = np.array(self.count_SIR())
         ts = []
@@ -145,17 +155,19 @@ class Population2d():
             if plot_time_interval and t % plot_time_interval == 0:
                 self.scatter_plot(title=f't = {t}, i = {len(self.i_info)/self.N}')
 
-        return SIRs, np.array(ts)
+        if return_time:
+            return SIRs, np.array(ts)
+
+        return SIRs
 
 
 if __name__ == 'main':
 
-    pop = Population2d(10000, 1)
+    pop = Population2d(1000, 1)
     t0 = time()
-    SIRs, ts = pop.simulation(T=100, p=0.2, q=0.1, k=0.1)
+    SIRs, ts = pop.simulation(T=100, p=0.2, q=0.1, k=0.1, return_time=True)
     t1 = time()
     t1 - t0
-
 
     # plot SIR by time
     pd.DataFrame(SIRs, columns=['S', 'I', 'R']).plot(legend=True)
