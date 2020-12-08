@@ -44,7 +44,7 @@ class PopulationSEIR(Population):
         """
         simulate the spread for T days
         return:
-            sirs, shape (T, 4), record of daily s,e,i,r
+            seirs, shape (T+1, 4), record of daily s,e,i,r
         """
         seirs = np.array(self.count_seir())
         for t in range(T):

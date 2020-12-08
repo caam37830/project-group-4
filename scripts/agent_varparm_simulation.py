@@ -22,7 +22,7 @@ def plot_sir(sirs, sirs2=None, save_as=None):
     fig.legend(bbox_to_anchor=(1,0.5), loc="center left", borderaxespad=0)
 
     if save_as:
-        fig.savefig(f'../output/agent_varparm_{save_as}.png', dpi=300, bbox_inches='tight')
+        fig.savefig(f'../output/{save_as}.png', dpi=300, bbox_inches='tight')
 
     # fig.show()
 
@@ -36,28 +36,28 @@ T = 100
 b, k, p = 10, 0.01, 0.1
 pop = PopulationVarparm(N,i0)
 sirs = pop.simulation(T=T, b=b, k=k, p=p)
-plot_sir(sirs, save_as='base_case')
+plot_sir(sirs, save_as='agent_varparm_base_case')
 
 
 # social distancing
 pop = PopulationVarparm(N,i0)
 bs = [10]*5 + [3]*25 + [1]*70 # social distancing
 sirs_dist = pop.simulation(T=T, b=bs, k=k, p=p)
-plot_sir(sirs, sirs_dist, 'social_distancing')
+plot_sir(sirs, sirs_dist, 'agent_varparm_social_distancing')
 
 # drug developement and distribution
 pop = PopulationVarparm(N,i0)
 ks = [0.01]*50 + [0.1]*20 + [0.8]*30
 sirs_drug = pop.simulation(T=T, b=b, k=ks, p=p)
-plot_sir(sirs, sirs_drug, 'drug')
+plot_sir(sirs, sirs_drug, 'agent_varparm_drug')
 
 # virus mutation
 pop = PopulationVarparm(N,i0)
 ps = [0.1]*20 + [0.8]*80 # mutation, become more infectious
 sirs_mut = pop.simulation(T=T, b=b, k=k, p=ps)
-plot_sir(sirs, sirs_mut, 'mutation')
+plot_sir(sirs, sirs_mut, 'agent_varparm_mutation')
 
 # all together
 pop = PopulationVarparm(N,i0)
 sirs_all = pop.simulation(T=T, b=bs, k=ks, p=ps)
-plot_sir(sirs, sirs_all, 'all')
+plot_sir(sirs, sirs_all, 'agent_varparm_all')
