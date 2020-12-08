@@ -3,6 +3,8 @@ import math
 from numpy.random import randint, rand, randn, choice
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import sys
+sys.path.append('../')
 from scipy.spatial import KDTree
 from sir.agent_pop2d import Population2d
 from matplotlib.lines import Line2D

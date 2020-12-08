@@ -15,6 +15,7 @@ N = 1000
 T = 100
 e0 = i0 = 0.001
 b, k = 1, 0.01
+f = 0.2
 
 
 # check how s,e,i,r change with f

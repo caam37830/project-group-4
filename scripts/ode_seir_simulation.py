@@ -17,7 +17,7 @@ N = 1000 # 1000 is enough for ode to generate smooth lines
 T = 100
 e0 = i0 = 0.001
 b, k = 1, 0.01
-
+f = 0.2
 
 # check how s,e,i,r change with f
 def plot_lines(ax, df, cmap=mpl.cm.OrRd, start=0.2, end=1):
@@ -149,7 +149,7 @@ bs = np.arange(grid_size)+1
 ks = np.logspace(-2,-0.5,grid_size) # larger ks has no effect
 fs = np.logspace(-2,0,grid_size)
 T = 100
-bfks, itss = simulate(bs, ks, fs, T=100)
+bfks, itss = simulate_bfks(bs, ks, fs, T=100)
 
 # try plot when t=50
 t = 50
