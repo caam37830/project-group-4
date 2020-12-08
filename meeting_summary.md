@@ -36,17 +36,20 @@ T = 100
 > Choose an interesting parameter of p using question 1. How does the simulation qualitatively differ when the initial infected individuals start in a single corner of the square vs. the center of the square vs. being randomly spread out?
 
 - ✅ 怎么定义interesting?
-  - 使得i(t)的峰值最大的p   p = argmax_p max_t i_p(t)
+  - ❌使得i(t)的峰值最大的p   p = argmax_p max_t i_p(t)  
+    - 此时p太大，跟起始位置关系就不大了
+  - p=0, p=.5, =1
 
 - 选好the interesting p后，我们也可以画i(t)来回答这个问题。legend换成上面三个, i.e. corner, center, randomly spread out.
-  - randomly spread out的话，我觉得可以random sample多一点。比如，如果三种legend对应颜色红绿蓝，则最后的图是1条红线，1条绿线，n条蓝线，n是random sample的次数。
+  - randomly spread out的话，我觉得可以random sample多一点。比如，如果三种legend对应颜色红绿蓝，则最后的图是n1条红线，n2条绿线，n3条蓝线，n是random sample的次数。
   - 管这个line plot叫**location effect plot**好了
-  - 对应的画图函数可以定义成`plot_loc_effect(i_ts)`，where `i_ts.shape = (2+n, T)`, 也就是前两行分别是corner, center，后面n行是random spread out。同理，agend和pde都可以用这个画图函数
+  - 对应的画图函数可以定义成`plot_loc_effect(i_ts)`，where `i_ts.shape = (n1+n2+n3, T)`, 分别是corner, center，random spread out的试验次数。同理，agend和pde都可以用这个画图函数
 
 
-- 静态二位图
+- 静态二维图
   - 三个case，每个case选4个有意义的t，画成3*4的subplots
   - 管他叫plot_loc_effect_2d(i_ts)
+
 
 - Optional：动图，每帧对应时刻t
   - agent的每帧是N个散点在[0,1] * [0,1]的scatter plot，s,i,r分别用blue, red, green吧, red有危险的意味，green表示健康，不会被感染
@@ -96,9 +99,10 @@ ode里不好对每个t设置设置不同的b，k。还是用piece-wise constant�
 dennis
   - ✅写agent2.py，用一个attribute state表示SIR状态
     - 实际上写了agent_pop.py, 新建了一个class Population() , 避免了agent()的loop和内存占用。速度应该会快一点
+
   - 写三个variations的simulation
     - ✅agent_varparm
-      - N=10000的图更granular，但耗时
+      - N=10000的图更granular，但耗时 ✅已解决这个问题。见agent_pop.py里的infect()
         - 用N=1000做草图
         - 确定形态后，用N=10000出图
       - findings
@@ -116,6 +120,9 @@ dennis
         - 做 pre-peak, post-peak
         - 给图中加竖直线标注ax.axvline(group_mean, ls='--', color='r')
         - 增加T
+
+    - ✅ode_varparm
+        - ❓p怎么加进ode
     - ✅ agent_seir
       - 选b=1, k=0.01, 画plot_f_effect,
         - 每条线是i(t), 对应一个f，    color scale
@@ -123,9 +130,12 @@ dennis
         - pairwise
       - optional:
         - 3-D phase diagram in html
+        - ❓save的图不一样
 
     - ✅ ode_seir
       - effect of f
         - large f is equivalent to sir
         - small f flattens i(t), many stuck in state e
-      -
+
+    - fitting
+      - 

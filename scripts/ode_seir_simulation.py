@@ -12,7 +12,6 @@ import matplotlib.ticker as mticker
 
 
 
-
 # global hyper parameters
 N = 1000 # 1000 is enough for ode to generate smooth lines
 T = 100
