@@ -4,6 +4,7 @@ from agent_seir import PopulationSEIR
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
 import itertools as it
@@ -27,12 +28,12 @@ for f in fs:
 result = np.asarray(result)
 result.shape
 
-def plot_lines(ax, df, cmap, start=0.2, end=1):
+def plot_lines(ax, df, cmap=mpl.cm.OrRd, start=0.2, end=1):
     """
     plot simulated result with various value of f
     input
         df: shape (len(fs),T), every row is, e.g. i(t), for certain f
-        cmap: an plt.cm colormap object, see https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+        cmap: a matplot.cm colormap object, see https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
         start, end: scale location in color map
     """
     cols = [cmap(x) for x in np.linspace(start, end, len(df))]
