@@ -1,4 +1,5 @@
 .DS_Store
+*/.DS_Store
 doc/checkpoint/source/.ipynb_checkpoints/report-checkpoint.ipynb
 
 # Byte-compiled / optimized / DLL files
