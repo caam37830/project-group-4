@@ -20,10 +20,11 @@ def plot_lines(ax, df, cmap,label = None, start=0.2, end=1):
     """
     cols = [cmap(x) for x in np.linspace(start, end, len(df))]
     for i, col in enumerate(cols):
-        if label != None:
-            ax.plot(df[i, :], c=col, label=label[i])
-        else:
+        if label is None:
             ax.plot(df[i, :], c=col)
+        else:
+            ax.plot(df[i, :], c=col, label=label[i])
+
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Fraction')
     return ax
