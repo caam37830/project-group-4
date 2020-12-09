@@ -168,7 +168,6 @@ if __name__ == 'main':
     SIRs, ts = pop.simulation(T=100, p=0.2, q=0.1, k=0.1, return_time=True)
     t1 = time()
     t1 - t0
-
     # plot SIR by time
     pd.DataFrame(SIRs, columns=['S', 'I', 'R']).plot(legend=True)
 

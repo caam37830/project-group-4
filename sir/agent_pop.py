@@ -26,13 +26,14 @@ class Population():
         self.s_ind = np.setdiff1d(np.arange(N), self.i_ind, True)
         self.r_ind = np.array([])
 
+
     def infect(self, b: int):
         """
         each infected individual contact b other individuals
         if a susceptible individual is contacted, then he becomes infected
         for simplicity, we don't want to loop over each infected individuals, when I is large
         consider from the population perspective,
-        the probability for an individual not to be contact by an I is (N-b)/(N-1)
+        the probability for an individual not to be contact by an I is (N-1-b)/(N-1)
         so the probability for an individual not to be contact by all I's is [(N-b)/(N-1)]^len(I)
         """
         # contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()

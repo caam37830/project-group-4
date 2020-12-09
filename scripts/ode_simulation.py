@@ -27,6 +27,9 @@ from sir.ode import ode_model
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+
+
 
 def plot_sim(result, b, k, ax, accessory=True):
     """
@@ -59,6 +62,8 @@ f, ax = plt.subplots()
 plot_sim(ode_model(i0, T, b, k), b, k, ax)
 # plt.show()
 
+
+
 # facet plot
 bs = np.arange(1, 11, 2, dtype=np.int64)
 ks = np.logspace(-2, 0, 5)
@@ -80,20 +85,24 @@ f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsi
 # plt.savefig("output/ode_facet_plot.png")
 
 # phase diagram at time t
-bs = np.arange(1, 11, dtype=np.int64)
-ks = np.logspace(-2, 0, 10)
+def log_tick_formatter(val, pos=None):
+    return "{:.2f}".format(np.exp(val))
+
+bs = np.arange(1, 20, dtype=np.int64)
+ks = np.logspace(-2, 0, 20)
 results_large = run_sim(i0, T, bs, ks)
 
-t = 10
-f, ax = plt.subplots(1, 3, figsize=(15,5))
+f, ax = plt.subplots(1, 3, figsize=(16,4))
 for i, t in enumerate([5, 10, 50]):
     m = ax[i].imshow(results_large[::-1,:,1,t],
-                     extent=[np.min(ks), np.max(ks), np.min(bs), np.max(bs)],
-                     vmin=0, vmax=1)
+                     extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
+                     vmin=0, vmax=1, cmap='OrRd')
     ax[i].axis('auto')
+    ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[i].set_title(f"t = {t}")
 f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
 f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
 f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
 f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
 # plt.savefig("output/ode_phase_plot.png", dpi=200)
+f.savefig('../docs/figs/ode_phase_plot.png', dpi=300)
