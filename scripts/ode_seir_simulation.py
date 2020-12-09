@@ -121,6 +121,8 @@ def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     ax[2].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[2].set_ylabel(r'$b$: number of interactions')
 
+    # f.colorbar(ax[2], ax=[ax[0],ax[1],ax[2]])
+
     plt.subplots_adjust(wspace = 0.3)
 
     if title:
@@ -139,7 +141,7 @@ def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
     ax.set_xlabel('b')
     ax.set_ylabel('f')
     ax.set_zlabel('k')
-    
+
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     fig.colorbar(scat, pad=0.2, shrink=0.8)

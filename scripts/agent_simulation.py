@@ -24,10 +24,12 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 import sys
 sys.path.append('../')
 from sir.agent import Person
-
+from sir.agent_pop import Population
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import randint, rand, choice
+import matplotlib.ticker as mticker
+
 
 def count_sir(pop):
     I = sum(p.is_infected() for p in pop)
@@ -114,25 +116,35 @@ f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsi
 # plt.savefig("output/agent_facet_plot.png")
 
 # phase diagram
-p_bs = np.arange(1, 11, dtype=np.int64)
-p_ks = np.logspace(-2, 0, 10)
+grid_size = 20
+p_bs = np.arange(1, grid_size+1, dtype=np.int64)
+p_ks = np.logspace(-2, 0, grid_size)
 p_results = np.zeros((len(p_bs), len(p_ks), T+1, 3)) # empty container
 
 for i, b in enumerate(p_bs):
     for j, k in enumerate(p_ks):
-        counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
-        p_results[i,j,...] = counts_sir / N
+        # counts_sir = run_sim(b,k,N,T) # shape = (T+1, 3), columns are S, I, R
+        # p_results[i,j,...] = counts_sir / N
+        pop = Population(N, 0.001)
+        p_results[i,j,...] = pop.simulation(b=b,k=k,T=T)
 # phase diagram at time t
 #t = 10
-f, ax = plt.subplots(1, 3, figsize=(15,5))
+
+def log_tick_formatter(val, pos=None):
+    return "{:.2f}".format(np.exp(val))
+
+
+f, ax = plt.subplots(1, 3, figsize=(16,4))
 for i, t in enumerate([5, 10, 50]):
     m = ax[i].imshow(p_results[::-1,:,t,1],
-                     extent=[np.min(p_ks), np.max(p_ks), np.min(p_bs), np.max(p_bs)],
-                     vmin=0, vmax=1)
+                     extent=[np.min(np.log(p_ks)), np.max(np.log(p_ks)), np.min(p_bs), np.max(p_bs)],
+                     vmin=0, vmax=1, cmap='OrRd')
     ax[i].axis('auto')
+    ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+
     ax[i].set_title("t = {}".format(t))
 f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
 f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
 f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
 f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-# plt.savefig("output/agent_phase_plot.png", dpi=200)
+plt.savefig("../docs/figs/agent_phase_plot.png", dpi=300)

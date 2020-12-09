@@ -71,7 +71,6 @@ plot_sir(sirs, sirs_dist, bprds[0], title='Late social distancing', save_as='age
 
 
 
-
 # drug developement and distribution
 pop0 = PopulationVarparm(N,i0)
 kprds = [15, 55, 30]
@@ -96,9 +95,6 @@ for prd, k_ in zip(kprds[1:], ks[1:]):
     sirs_drug = np.vstack((sirs_drug, pop1.simulation(T=prd, b=b, k=k_, p=p)[1:]))
 
 plot_sir(sirs, sirs_drug, kprds[0], title='Late drug developement and distribution', save_as='agent_varparm_drug_late')
-
-
-
 
 
 
@@ -131,9 +127,17 @@ plot_sir(sirs, sirs_mut, pprds[0], title='Late virus mutation', save_as='agent_v
 
 
 # all together
+
+bprds = [5, 25, 70]
+bs = [10, 3, 1]
+kprds = [15, 55, 30]
+ks = [0.01, 0.1, 0.8]
+pprds = [20, 80]
+ps = [0.1, 0.8]
+
 pop = PopulationVarparm(N,i0)
 sirs_all = pop.simulation(T=T, b=np.repeat(bs, bprds),
                                 k=np.repeat(ks, kprds),
                                 p=np.repeat(ps, pprds))
 
-plot_sir(sirs, sirs_all, 0, 'agent_varparm_all')
+plot_sir(sirs, sirs_all, 0, title='Early effects', save_as='agent_varparm_all')
