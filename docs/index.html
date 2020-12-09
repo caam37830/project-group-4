@@ -13364,13 +13364,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We first make a plot as a base case to be compared to, where $b=10, k=0.01, p=0.1$ We see from the plot below that $i(t)$ reaches its maximum at around 80% on day 30.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><img style="float: center;" src="figs/agent_varparm_base_case.png" width="40%"></p>
 
 </div>
@@ -13380,13 +13373,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's see the effect of social distancing. The trajectories of $s(t), i(t)$ and $r(t)$ for altered parameters are represented in dash lines. We see that early social distancing (left) can mitigate the spreads of the pandemic. The dash orange line $i(t)$ increases at a slower speed. The peak arrives later with a smaller value, which could alleviate the pressure of medical capacity. In contrast, late social distancing starting at day 20 (right) doesn't really help, since the susceptible fraction $s(t)$ is already quite small ane most people are infected or removed.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <table>
    <tr>
        <td><img src="figs/agent_varparm_social_distancing_early.png" width="80%"></td>
@@ -13400,13 +13386,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Then, we analyze the effect of durg development and distribution. Similarly, early drug distribution from day 15 (left) effectively change the trajectory of $i(t)$: it starts to decreases immediately rather than continue to reach its maximum in the base case. However, the susceptible fraction $s(t)$ does not change much. Drug distribution in a late stage around day 30 (right) changes $i(t)$ immediately too, but the peak is already arrived and the medical system may already be crashed.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <table>
    <tr>
        <td><img src="figs/agent_varparm_drug_early.png" width="80%"></td>
@@ -13420,13 +13399,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For the effect of virus mutation, we see that if the mutation happens in a pre-peak stage, then the peak will arrive earlier with a higher value. In contrast, if the mutation happens in a post-peak stage around day 80, then nothing changes since the susceptible fraction is already 0 – no more individual can get infected, and every individual is either infected or removed.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <table>
    <tr>
        <td><img src="figs/agent_varparm_mutation_early.png" width="80%"></td>
@@ -13440,13 +13412,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can consider the three effects in the early stage simultaneouly. The dash curves deviate significantly from the base case. Social distancing rules are enforced on day 5, drugs distribution starts from day 15. Theses two methods effectively decreases $i(t)$. The virus mutation happens on day 20, where we see a jump in the orange dash line. But the peak value is still smaller than that in the base case. Unfortunately, all susceptible individuals are infected eventually.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><img style="float: center;" src="figs/agent_varparm_all.png" width="40%"></p>
 
 </div>
@@ -13478,13 +13443,6 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The effects of the three time-dependent parameters are shown below.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <table>
    <tr>
        <td><img src="figs/ode_varparm_social_distancing_early.png" width="80%"></td>
@@ -13504,14 +13462,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
    <tr>
        <td><img src="figs/ode_varparm_all.png" width="40%"></td>
    </tr>
-</table>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We see that social distancing seems more significant in the ode model than in the agent model. All three fractions changes quite slowly. The mutation effect is more significant too with a large increment in $i(t)$ on the mutation day $t=20$. Maybe it is due to the effect of introducing the power term in $b\cdot p^1.5$. Drug distribution have similar effects in both models.</p>
+</table><p>We see that social distancing seems more significant in the ode model than in the agent model. All three fractions changes quite slowly. The mutation effect is more significant too with a large increment in $i(t)$ on the mutation day $t=20$. Maybe it is due to the effect of introducing the power term in $b\cdot p^1.5$. Drug distribution have similar effects in both models.</p>
 
 </div>
 </div>
@@ -13563,45 +13514,10 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 <p>We set $e(0) = i(0) = 0.001, b = 1, k = 0.01$ and run experiments for 10 different $f$ values in log-spaced interval 0.01 to 1. Deeper lines corresponds to larger values of $f$.</p>
 <p>It can be derived that when $f$ is getting closer to 1, the SEIR model converges to the SIR model since the exposed period is quite short. This is shown in the top right purple plot of $e(t)$, where the curves becomes more flattened as $f$ increases.</p>
 <p>When $f$ is very small, the individuals "stuck" in the state $E$ and transit to state $I$ very slowly. This is good since we flatten the orange $i(t)$ curves which gives the medical system more time to prepare and react.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="figs/agent_seir_by_f.png" width="60%" height="100%"></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>We then investigate the phase diagrams of the paramters $b,f,k$. We simulate $i(t)$ for 100 days with 1,000 $(b,f,k)$ combinations. The 3-D phase diagram on the 50th day is shown below. Again, darker dots represents larger values of $i(50)$. After investigation we found that $i(50)$ is not sensitive to $k&gt;0.3$, which is consistent with our findings in the SIR model. So we only plot show the results for small $k$.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="figs/agent_seir_phase_3d_tmp.png" width="40%" height="100%"></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>From the above results we can generate three the 2-d phase diagrams by taking the mean of $i(t)$ in the remaning dimension.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="figs/agent_seir_phase_2d.png" width="100%" height="100%"></p>
 
 </div>
@@ -13626,30 +13542,9 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Simlarly, we repeat these experiments using the ODE model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="figs/ode_seir_by_f.png" width="60%" height="100%">&lt;/td&gt;</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="figs/ode_seir_phase_3d_tmp.png" width="40%" height="100%">&lt;/td&gt;</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="figs/ode_seir_phase_2d.png" width="100%" height="100%">&lt;/td&gt;</p>
+<p><img src="figs/ode_seir_by_f.png" width="60%" height="100%"></p>
+<p><img src="figs/ode_seir_phase_3d_tmp.png" width="40%" height="100%"></p>
+<p><img src="figs/ode_seir_phase_2d.png" width="100%" height="100%"></p>
 
 </div>
 </div>
