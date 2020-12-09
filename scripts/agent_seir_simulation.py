@@ -145,7 +145,7 @@ def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
     if save_as:
         plt.savefig(f'../output/{save_as}.png', dpi=300)
 
-grid_size = 7
+grid_size = 10
 bs = np.arange(grid_size)+1
 ks = np.logspace(-2,-0.5, grid_size)
 fs = np.logspace(-2,0, grid_size)
@@ -156,11 +156,11 @@ plot_phase_2d(bfks, itss[:,50], title=f't = {50}', save_as='agent_seir_phase_2d'
 plot_phase_3d(bfks, itss[:,50], title=f't = {50}', save_as='agent_seir_phase_3d')
 
 
-for t in range(T+1):
-    plot_phase_2d(bfks, itss[:,t], title=f't = {t}')
-    plt.show()
-
-
-for t in range(T+1):
-    plot_phase_3d(bfks, itss[:,t], title=f't = {t}')
-    plt.show()
+# for t in range(T+1):
+#     plot_phase_2d(bfks, itss[:,t], title=f't = {t}')
+#     plt.show()
+#
+#
+# for t in range(T+1):
+#     plot_phase_3d(bfks, itss[:,t], title=f't = {t}')
+#     plt.show()

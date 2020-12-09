@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import copy
 
-def plot_sir(sirs, sirs2=None, event_time=None, save_as=None):
+def plot_sir(sirs, sirs2=None, event_time=None, title=None, save_as=None):
     """
     event_time: when sirs2 start to differ from sirs
     """
@@ -25,8 +25,11 @@ def plot_sir(sirs, sirs2=None, event_time=None, save_as=None):
 
     fig.legend(bbox_to_anchor=(1,0.5), loc="center left", borderaxespad=0)
 
+    if title:
+        plt.title(title)
+
     if save_as:
-        fig.savefig(f'../output/{save_as}.png', dpi=300, bbox_inches='tight')
+        fig.savefig(f'../docs/figs/{save_as}.png', dpi=300, bbox_inches='tight')
 
 
 # hyper parm
@@ -38,7 +41,7 @@ T = 100
 b, k, p = 10, 0.01, 0.1
 pop = PopulationVarparm(N,i0)
 sirs = pop.simulation(T=T, b=b, k=k, p=p)
-plot_sir(sirs, save_as='agent_varparm_base_case')
+plot_sir(sirs, title='Base case', save_as='agent_varparm_base_case')
 
 
 # social distancing
@@ -52,7 +55,22 @@ for prd, b_ in zip(bprds[1:], bs[1:]):
     sirs = np.vstack((sirs, pop0.simulation(T=prd, b=bs[0], k=k, p=p)[1:]))
     sirs_dist = np.vstack((sirs_dist, pop1.simulation(T=prd, b=b_, k=k, p=p)[1:]))
 
-plot_sir(sirs, sirs_dist, bprds[0], 'agent_varparm_social_distancing')
+plot_sir(sirs, sirs_dist, bprds[0], title='Early social distancing', save_as='agent_varparm_social_distancing_early')
+
+pop0 = PopulationVarparm(N,i0)
+bprds = [20, 50, 70]
+bs = [10, 3, 1]
+sirs = pop0.simulation(T=bprds[0], b=bs[0], k=k, p=p)
+pop1 = copy.copy(pop0)
+sirs_dist = copy.copy(sirs[-1])
+for prd, b_ in zip(bprds[1:], bs[1:]):
+    sirs = np.vstack((sirs, pop0.simulation(T=prd, b=bs[0], k=k, p=p)[1:]))
+    sirs_dist = np.vstack((sirs_dist, pop1.simulation(T=prd, b=b_, k=k, p=p)[1:]))
+
+plot_sir(sirs, sirs_dist, bprds[0], title='Late social distancing', save_as='agent_varparm_social_distancing_late')
+
+
+
 
 # drug developement and distribution
 pop0 = PopulationVarparm(N,i0)
@@ -65,7 +83,26 @@ for prd, k_ in zip(kprds[1:], ks[1:]):
     sirs = np.vstack((sirs, pop0.simulation(T=prd, b=b, k=ks[0], p=p)[1:]))
     sirs_drug = np.vstack((sirs_drug, pop1.simulation(T=prd, b=b, k=k_, p=p)[1:]))
 
-plot_sir(sirs, sirs_drug, kprds[0], 'agent_varparm_drug')
+plot_sir(sirs, sirs_drug, kprds[0], title='Early drug developement and distribution', save_as='agent_varparm_drug_early')
+
+pop0 = PopulationVarparm(N,i0)
+kprds = [30, 40, 30]
+ks = [0.01, 0.1, 0.8]
+sirs = pop0.simulation(T=kprds[0], b=b, k=ks[0], p=p)
+pop1 = copy.copy(pop0)
+sirs_drug = copy.copy(sirs[-1])
+for prd, k_ in zip(kprds[1:], ks[1:]):
+    sirs = np.vstack((sirs, pop0.simulation(T=prd, b=b, k=ks[0], p=p)[1:]))
+    sirs_drug = np.vstack((sirs_drug, pop1.simulation(T=prd, b=b, k=k_, p=p)[1:]))
+
+plot_sir(sirs, sirs_drug, kprds[0], title='Late drug developement and distribution', save_as='agent_varparm_drug_late')
+
+
+
+
+
+
+
 
 # virus mutation
 pop0 = PopulationVarparm(N,i0)
@@ -77,8 +114,19 @@ sirs_mut = copy.copy(sirs[-1])
 for prd, p_ in zip(pprds[1:], ps[1:]):
     sirs = np.vstack((sirs, pop0.simulation(T=prd, b=b, k=k, p=ps[0])[1:]))
     sirs_mut = np.vstack((sirs_mut, pop1.simulation(T=prd, b=b, k=k, p=p_)[1:]))
-plot_sir(sirs, sirs_mut, pprds[0], 'agent_varparm_mutation')
+plot_sir(sirs, sirs_mut, pprds[0], title='Early virus mutation', save_as='agent_varparm_mutation_early')
 
+# virus mutation
+pop0 = PopulationVarparm(N,i0)
+pprds = [80, 20]
+ps = [0.1, 0.8]
+sirs = pop0.simulation(T=pprds[0], b=b, k=k, p=ps[0])
+pop1 = copy.copy(pop0)
+sirs_mut = copy.copy(sirs[-1])
+for prd, p_ in zip(pprds[1:], ps[1:]):
+    sirs = np.vstack((sirs, pop0.simulation(T=prd, b=b, k=k, p=ps[0])[1:]))
+    sirs_mut = np.vstack((sirs_mut, pop1.simulation(T=prd, b=b, k=k, p=p_)[1:]))
+plot_sir(sirs, sirs_mut, pprds[0], title='Late virus mutation', save_as='agent_varparm_mutation_late')
 
 
 
