@@ -8,7 +8,7 @@ sys.path.append('../')
 from scipy.spatial import KDTree
 from sir.agent_pop2d import Population2d
 from matplotlib.lines import Line2D
-
+import math
 
 def plot_lines(ax, df, cmap,label = None, start=0.2, end=1):
     """
@@ -35,7 +35,7 @@ N=1000
 I = 1
 T = 50
 b = 7
-k = 0.1
+k = 0.05
 q = math.sqrt(b/(math.pi*N))
 
 # investigate different ps starting at center
@@ -53,13 +53,13 @@ def plot_scale_effect(results,save_as=None):
     ax[1] = plot_lines(ax[1], results[:,:,1], mpl.cm.OrRd,ps) #I
     ax[2] = plot_lines(ax[2], results[:,:,2], mpl.cm.Greens,ps) #R
     if save_as != None:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
     plt.show()
 
 
 ps = np.round(np.linspace(0,1,20),1)
 r_ps = simulate_step(ps)
-plot_scale_effect(r_ps)
+plot_scale_effect(r_ps,'agent_2d_by_p')
 
 # investigate location
 # loc = ['center','corner']
@@ -103,13 +103,46 @@ def plot_loc_effect_2d(results,n1 = 5,n2 = 5,n3 = 20,save_as=None):
     plt.legend(custom_lines, ['Center', 'Corner', 'Random'])
     plt.xlabel("Time")
     plt.ylabel("Infectious Rate")
+    plt.title("Infectious Rate by Different Starting Position")
     if save_as != None:
-        plt.savefig(f'../output/agent_loc_p_{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/agent_loc_p_{save_as}.png', dpi=300)
     plt.show()
 
 r_p0 = simulate_pos(0)
-plot_loc_effect_2d(r_p0)
+plot_loc_effect_2d(r_p0,save_as=0)
 r_p05 = simulate_pos(0.5)
-plot_loc_effect_2d(r_p05)
+plot_loc_effect_2d(r_p05,save_as= 0.5)
 r_p1 = simulate_pos(1)
-plot_loc_effect_2d(r_p1)
+plot_loc_effect_2d(r_p1,save_as=1)
+
+
+
+T = [0,2,4,6,10]
+loc = ['center','corner','random']
+
+def plot_scatter(ax,pop):
+    ax.scatter(pop.s_info[:, 1], pop.s_info[:, 2])
+    ax.scatter(pop.i_info[:, 1], pop.i_info[:, 2])
+    if pop.r_info.size > 0:
+        ax.scatter(pop.r_info[:, 1], pop.r_info[:, 2])
+
+def plot_spread(p,save_as):
+    f, ax = plt.subplots(len(loc), len(T), figsize=(20, 15), sharex=True, sharey=True)
+    for i, l in enumerate(loc):
+        pop = Population2d(N,I,l)
+        for j, t in enumerate(T):
+            pop.simulation(t, p = p, q = q, k = k)
+            plot_scatter(ax[i,j],pop)
+    for i, l in enumerate(loc):
+        ax[i, 0].set_ylabel("{}".format(l))
+    for j, t in enumerate(T):
+        ax[0, j].set_title("t = {}".format(T[j]+T[j-1]))
+    f.text(0.5, 0.01, 'Spread of Virus by time vs Position', ha='center', fontsize=18)
+    if save_as != None:
+        plt.savefig(f'../docs/figs/agent_spread_p_{save_as}.png', dpi=300)
+    plt.show()
+    plt.show()
+
+plot_spread(0,0)
+plot_spread(0.3,0.3)
+plot_spread(1,1)
