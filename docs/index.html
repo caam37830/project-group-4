@@ -13085,6 +13085,21 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="0.-Abstract">0. Abstract<a class="anchor-link" href="#0.-Abstract">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this report, we study the spread of a disease using the SIR model and it's variations. We start with the basic SIR model to help us choose interesting parameters. We then explore the spatial SIR model with the set of chosen parameter, where we solve the model using the agent-based model and the PDE model, and study the effect of the diffusion parameter and the starting position on the evolvement of the infectious population. We then move on to the three variations we proposed in the midterm checkpoint. Finally, we present our findings by studying these models and our discussion on the limitations and improvements of these models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="1.-Introduction">1. Introduction<a class="anchor-link" href="#1.-Introduction">&#182;</a></h1>
 </div>
 </div>
@@ -13136,6 +13151,18 @@ div#notebook {
 \frac{d r}{d t} &amp;= k\cdot i(t) 
 \end{aligned}</li>
 </ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We get the following phase diagram using the agent-based model in the midterm checkpoint:</p>
+<p><img style="float: center;" src="figs/agent_phase_plot.png"></p>
+<p>and the following diagram using the ODE model:</p>
+<p><img style="float: center;" src="figs/ode_phase_plot.png"></p>
+<p>From the plots we can see that for the late stage such as <code>t = 50</code>, when <code>b</code> does not matter that much anymore, <code>k = 0.05</code> seems to be the boundary of completely white and a little colorful, so we will choose this <code>k</code>. For the early stage such as <code>t = 5</code>, when <code>b</code> does have an effect, the boundary seems to be around 5, so we choose <code>b = 7</code> for the agent-based model and <code>b = 5</code> for the PDE model.</p>
 
 </div>
 </div>
