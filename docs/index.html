@@ -13085,21 +13085,6 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In addition to the code you will write and simulations you will run, you should prepare a final report, which should be similar in length/format to a conference paper or short journal article. The purpose of the report is to explain what you investigated, how you investigated your topics (e.g. model/implementation), and why your investigation was interesting (what should a reader take away from your work).</p>
-<p>This can either be a PDF or a file which can be viewed in a web browser (please don't just use GitHub to host a notebook or markdown file - generate a static html web page). Put your report in the doc/final folder in the repository, which should contain any files and figures, as well as instructions to generate the PDF or html files (if they are generated from LaTeX, Markdown, etc.) If your extensions include an interactive visualization, find a good way to display this online. The purpose of the report is to explain what you investigated, how you investigated your topics, and why your investigation was interesting.</p>
-<p>Your report should the following sections. 0. Abstract (1 paragraph summary)</p>
-<p>A brief introduction to the SIR model, the notation you will use, and the different variations you investigate.
-Sections for the basic SIR model (also in midterm checkpoint), the spatial SIR model, and your variations. Include any relevant implementation details as well as your results and discussion.
-A conclusion summarizing your results, discussing limitations of your models, and pointing out interesting directions for further investigation
-A bibliography
-Please limit your report to 10 pages (excluding bibliography) with 1-inch margins (these margins allow for a lot of content per page). You can put additional figures/results in appendices (not counting to 10 page limit) if you would like, but it is perfectly fine to choose one or two figures per experiment that best illustrate your point in the main text.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1>
 </div>
 </div>
@@ -13166,6 +13151,55 @@ Please limit your report to 10 pages (excluding bibliography) with 1-inch margin
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Agent-based-Model">Agent-based Model<a class="anchor-link" href="#Agent-based-Model">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We model the spatial SIR by adding a 2D position coordinate <code>(x,y)</code>, where <code>0 &lt;= x &lt;= 1</code> and <code>0 &lt;= y &lt;= 1</code>. At each day, each agents moves with length <code>p</code> in a random direction, and infected people will infect others within radius <code>q</code> . We use KDTree to find such r nearest neighbors for each infected people. For simulation, we set $N = 10000, i_0 = 0.1, b = 7, k = 0.05$, which results $q = 0.015$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Effect of p value</strong></p>
+<p>To investigate how infected will change over p, we run 20 simulations with p equally space between 0 to 1. The results of $s(t)$,$i(t)$ and $r(t)$ change over $p$ is shown below.</p>
+<p><img style="float: center;" src="figs/agent_2d_by_p.png" width="80%"></p>
+<p>The depth of color indicates the magnitude of p. The darker color indicates larger value p. From the plot, we can see that with p starting at 0 (the lightest line,) the $s(t)$ lines sknew toward right as p increases, and the peak of the infectious rate also increases. The max of the peak reaches at approximately $p = 0.4$, with $i$ approximately equal to 0.8. Then the lines start skew toward left, and the peaks start to decrease again. This result is due to we limit the agent mobility by setting them stay at the same position if their move is out of bound. If p is too large, agents are equivalte to not move. Thus both of the spread spead and the maximum of infectious rate will decrease.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Effect of starting point</strong></p>
+<p>To investigate how starting point of infected will affect the spread, we choose three $p = 0, 0.5, 1$. For each p, we run total number of 30 simulations  with 5 sets starting at center, 5 sets starting at corner and 20 sets starting random. The resulted plots are shown below, with $p =0, 0.5, 1$ from left to right.</p>
+<table>
+   <tr>
+      <td><img style="float: center;" src="figs/agent_loc_p_0.png" width="100%"><td>
+      <td><img style="float: center;" src="figs/agent_loc_p_0.5.png" width="100%"><td>
+      <td><img style="float: center;" src="figs/agent_loc_p_1.png" width="100%"><td>
+   </tr>
+</table><p>By comparing the plots, we can conclude that if p  is within the middle range, ie. 0.3 - 0.5, the starting points really does not matter, since the spread of infectious is so quick. The middel point ps indicate agents can freely move around in any direction. Thus, even starting at the corner, the infected people are likely to get to the center at anytime point. With p really samll (we set extreme to 0 in this case,) since corner infected can only infect 1/4 of the people around, the spread is much lower than center/random starts. What's more, we can see with some extreme cases, infected might even not be able to spread the virus, with all of them getting recovered without further infection. We also notice that no matter what starting point is, lower mobility (either extreme large p or small p,) results lower infections rate and spread spead. Thus, stay at home is indeed important to flatten the curve.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To verify our conclusion, we futher visualize the spread of infectious by scatter plots.</p>
+<p><img style="float: center;" src="figs/agent_spread_p_0.png" width="80%"></p>
+<p>The above shows an extreme case that with $p = 0$, starting at corner can hardly spread the disease. The recover rate outspeed the spread rate. While starting at center and random, it is more likely to spread the disease, since there are more contacts within the radius.</p>
+<p><img style="float: center;" src="figs/agent_spread_p_0.3.png" width="80%"></p>
+<p>With p = 0.5, all most no people are susceptible within 10 days regardless of the starting points.</p>
+<p><img style="float: center;" src="figs/agent_spread_p_1.png" width="80%"></p>
+<p>When p = 1, the spread is slower than p = 0.5. Yet, the mobility of agentes still exist.</p>
+
 </div>
 </div>
 </div>
