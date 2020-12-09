@@ -21,9 +21,9 @@ to 0? Are there parameter regimes where everyone is eventually infected?
 
 """
 
-import sys, os
-sys.path.append(os.getcwd())
-from sir import *
+import sys
+sys.path.append('../')
+from sir.ode import ode_model
 
 import numpy as np
 import matplotlib.pyplot as plt
