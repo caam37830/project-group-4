@@ -46,12 +46,15 @@ def simulate_step(ps):
         results[i,...] = counts_sir / N # convert to fractions, store in results
     return results
 #generate scale plot
-def plot_scale_effect(results):
+def plot_scale_effect(results,save_as=None):
     fig, ax = plt.subplots(1,3,figsize = (12,4),sharex='all', sharey='all')
-    ax[0] = plot_lines(ax[0], results[:,:,0], ps, mpl.cm.Blues) #S
-    ax[1] = plot_lines(ax[1], results[:,:,1], ps, mpl.cm.OrRd) #I
-    ax[2] = plot_lines(ax[2], results[:,:,2], ps, mpl.cm.Greens) #R
-    plt.savefig('../output/agent_2d_by_p.png', dpi=300)
+    ax[0] = plot_lines(ax[0], results[:,:,0], mpl.cm.Blues,ps) #S
+    ax[1] = plot_lines(ax[1], results[:,:,1], mpl.cm.OrRd,ps) #I
+    ax[2] = plot_lines(ax[2], results[:,:,2], mpl.cm.Greens,ps) #R
+    if save_as != None:
+        plt.savefig(f'../output/{save_as}.png', dpi=300)
+    plt.show()
+
 
 ps = np.round(np.linspace(0,1,20),1)
 r_ps = simulate_step(ps)
@@ -104,8 +107,8 @@ def plot_loc_effect_2d(results,n1 = 5,n2 = 5,n3 = 20,save_as=None):
     plt.show()
 
 r_p0 = simulate_pos(0)
-plot_loc_effect_2d(r_p0,save_as=0)
+plot_loc_effect_2d(r_p0)
 r_p05 = simulate_pos(0.5)
-plot_loc_effect_2d(r_p05,save_as=0.5)
+plot_loc_effect_2d(r_p05)
 r_p1 = simulate_pos(1)
-plot_loc_effect_2d(r_p1,save_as=1)
+plot_loc_effect_2d(r_p1)
