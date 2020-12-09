@@ -33,7 +33,10 @@ ax1.set_ylabel(r"Susceptible Fraction, $s(t)$")
 ax2 = ax1.twinx()
 ax2.plot(cases.i, 'C1')
 ax2.set_ylabel(r"Infectious Fraction, $i(t)$")
-plt.xlabel('Day from Jan 22, 2020')
+ax1.set_xlabel('Day from Jan 22, 2020')
+
+fig.subplots_adjust(right=0.8)
+plt.savefig('../docs/figs/data_s_i_t.png', dpi=300)
 plt.show()
 
 
@@ -85,10 +88,10 @@ cutoffs.append(si.shape[1]-1)
 fig, (ax1, axb) = plt.subplots(2,1,figsize=(7,7), gridspec_kw={
                            'height_ratios': [4, 1]},sharex='all')
 ax1.plot(si[0],'C0-')
-ax1.set_ylabel(r"Susceptible Fraction$")
+ax1.set_ylabel(r"Susceptible Fraction")
 ax2 = ax1.twinx()
 ax2.plot(si[1], 'C1')
-ax2.set_ylabel(r"Infectious Fraction$")
+ax2.set_ylabel(r"Infectious Fraction")
 plt.xlabel('Day from Jan 22, 2020')
 
 bs = []
