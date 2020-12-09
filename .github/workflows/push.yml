@@ -32,11 +32,6 @@ jobs:
         cd test
         pytest test.py
         cd ../
-    - name: Run modules
-      run: |
-        cd sir
-        python *.py
-        cd ../
     - name: Run scripts
       run: |
         cd scripts
