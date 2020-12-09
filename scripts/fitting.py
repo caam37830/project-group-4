@@ -82,7 +82,8 @@ cutoffs.append(si.shape[1]-1)
 
 # 94, 142, 191 239
 
-fig, ax1 = plt.subplots()
+fig, (ax1, axb) = plt.subplots(2,1,figsize=(7,7), gridspec_kw={
+                           'height_ratios': [4, 1]},sharex='all')
 ax1.plot(si[0],'C0-')
 ax1.set_ylabel(r"Susceptible Fraction$")
 ax2 = ax1.twinx()
@@ -103,7 +104,12 @@ ax1.plot([], [], 'C1-', label=r'$i(t)$', )
 ax1.plot([], [], 'C0--', label=r'$\hat s(t)$', )
 ax1.plot([], [], 'C1--', label=r'$\hat i(t)$', )
 ax1.legend(loc='center left')
-plt.title('True and Fitted Curves')
-plt.xlabel('Day from Jan 22, 2020')
+ax1.set_title('True and Fitted Curves')
+
+axb.set_title(r'Estimated Interaction Rate')
+axb.set_ylabel(r'$\hat b$')
+axb.set_xlim(0,si.shape[1])
+axb.plot(range(cutoffs[0]+1, si.shape[1]), bs1,'grey')
+axb.set_xlabel('Day from Jan 22, 2020')
 plt.savefig('../docs/figs/ode_fitting.png', dpi=300)
 plt.show()
