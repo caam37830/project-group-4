@@ -1,4 +1,8 @@
 # packages required to run code
 numpy
+pandas
+math
 scipy
 matplotlib
+mpl_toolkits
+itertools
