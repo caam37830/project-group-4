@@ -11,7 +11,7 @@ import itertools as it
 import matplotlib.ticker as mticker
 
 # global hyper parameters
-N = 1000
+N = 10000
 T = 100
 e0 = i0 = 0.001
 b, k = 1, 0.01
@@ -19,7 +19,7 @@ f = 0.2
 
 
 # check how s,e,i,r change with f
-def plot_lines(ax, df, cmap=mpl.cm.OrRd, start=0.2, end=1):
+def plot_lines(ax, df, cmap=mpl.cm.OrRd, start=0.2, end=1, title=None):
     """
     plot simulated result with various value of f
     input
@@ -30,6 +30,9 @@ def plot_lines(ax, df, cmap=mpl.cm.OrRd, start=0.2, end=1):
     cols = [cmap(x) for x in np.linspace(start, end, len(df))]
     for i, col in enumerate(cols):
         ax.plot(df[i,:], c=col)
+
+    if title:
+        ax.set_title(title)
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Fraction')
     return ax
@@ -58,10 +61,10 @@ def plot_f_effect(fs, T=T, b=b, f=f, k=k, save_as=None):
     fig.text(0.5, 0.04, 'Time', va='center', ha='center')
     fig.text(0.04, 0.5, 'Fraction', va='center', ha='center', rotation='vertical')
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
 fs = np.logspace(-2,0,10)
-plot_f_effect(fs)
+plot_f_effect(fs, save_as='ode_seir_by_f')
 
 # 3-D Phase diagram in PDF
 def simulate_bfks(bs, ks, fs, T=T, N=N, e0=e0, i0=i0):
@@ -84,6 +87,10 @@ def simulate_bfks(bs, ks, fs, T=T, N=N, e0=e0, i0=i0):
     itss = np.asarray(itss0) # nsim * (T+1)
     return bfks, itss
 
+
+def log_tick_formatter(val, pos=None):
+    return "{:.2f}".format(np.exp(val))
+
 def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     """
     plot a 2-D phase diagram of i(t) for varying b, f, k
@@ -96,28 +103,32 @@ def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     f, ax = plt.subplots(1, 3, figsize=(15,4))
 
     ax[0].imshow(its2.mean(axis=0).transpose()[::-1,:], aspect='auto',
-                 extent=[np.min(fs), np.max(fs), np.min(ks), np.max(ks)],
+                 extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(np.log(ks)), np.max(np.log(ks))],
                  vmin=0, vmax=1, cmap=cmap)
     ax[0].set_xlabel(r'$f$: infected fraction')
+    ax[0].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[0].set_ylabel(r'$k$: recover fraction')
+    ax[0].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
 
     ax[1].imshow(its2.mean(axis=1).transpose()[::-1,:], aspect='auto',
-                 extent=[np.min(bs), np.max(bs), np.min(ks), np.max(ks)],
+                 extent=[np.min(bs), np.max(bs), np.min(np.log(ks)), np.max(np.log(ks))],
                  vmin=0, vmax=1, cmap=cmap)
     ax[1].set_xlabel(r'$b$: number of interactions')
     ax[1].set_ylabel(r'$k$: recover fraction')
+    ax[1].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
 
     ax[2].imshow(its2.mean(axis=2)[::-1,:], aspect='auto',
-                 extent=[np.min(fs), np.max(fs), np.min(bs), np.max(bs)],
+                 extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(bs), np.max(bs)],
                  vmin=0, vmax=1, cmap=cmap)
     ax[2].set_xlabel(r'$f$: infected fraction')
+    ax[2].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[2].set_ylabel(r'$b$: number of interactions')
 
     plt.subplots_adjust(wspace = 0.3)
     if title:
-        f.text(0.5, 0.99, title, ha='center', fontsize=14)
+        f.text(0.5, 0.90, title, ha='center', fontsize=14)
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
 
 def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
@@ -135,25 +146,23 @@ def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
     ax.set_xlabel('b')
     ax.set_ylabel('f')
     ax.set_zlabel('k')
-    def log_tick_formatter(val, pos=None):
-        return "{:.2f}".format(np.exp(val))
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     fig.colorbar(scat, pad=0.2, shrink=0.8)
     if title:
         plt.title(title)
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
-grid_size = 10
+grid_size = 20
 bs = np.arange(grid_size)+1
 ks = np.logspace(-2,-0.5, grid_size)
 fs = np.logspace(-2,0, grid_size)
 T = 100
 bfks, itss = simulate_bfks(bs, ks, fs, T=100)
-
-plot_phase_2d(bfks, itss[:,50], title=f't = {50}', save_as='agent_seir_phase_2d')
-plot_phase_3d(bfks, itss[:,50], title=f't = {50}', save_as='agent_seir_phase_3d')
+t = 50
+plot_phase_2d(bfks, itss[:,t], title=f'$i({t})$', save_as='agent_seir_phase_2d')
+plot_phase_3d(bfks, itss[:,t], title=f'$i({t})$', save_as='agent_seir_phase_3d')
 
 
 # for t in range(T+1):

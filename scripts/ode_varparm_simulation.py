@@ -115,6 +115,15 @@ plot_sir(sirs, sirs_mut, pprds[0], title='Late virus mutation', save_as='ode_var
 
 
 # all together
+
+bprds = [5, 25, 70]
+bs = [10, 3, 1]
+kprds = [15, 55, 30]
+ks = [0.01, 0.1, 0.8]
+pprds = [20, 80]
+ps = [0.1, 0.8]
+
+
 sirs = ode_simulation(T=T, b=b*p**power, k=k, i0=i0)
 sirs_all = ode_simulation(T=1, b=bs[0]*ps[0]**power, k=ks[0], i0=i0)[0]
 sirs_all = sirs_all[np.newaxis, :]

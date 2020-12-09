@@ -85,6 +85,8 @@ def simulate_bfks(bs, ks, fs, T=T, N=N, e0=e0, i0=i0):
     itss = np.asarray(itss0) # nsim * (T+1)
     return bfks, itss
 
+def log_tick_formatter(val, pos=None):
+    return "{:.2f}".format(np.exp(val))
 
 def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     """
@@ -98,21 +100,25 @@ def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     f, ax = plt.subplots(1, 3, figsize=(15,4))
 
     ax[0].imshow(its2.mean(axis=0).transpose()[::-1,:], aspect='auto',
-                 extent=[np.min(fs), np.max(fs), np.min(ks), np.max(ks)],
+                 extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(np.log(ks)), np.max(np.log(ks))],
                  vmin=0, vmax=1, cmap=cmap)
     ax[0].set_xlabel(r'$f$: infected fraction')
+    ax[0].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[0].set_ylabel(r'$k$: recover fraction')
+    ax[0].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
 
     ax[1].imshow(its2.mean(axis=1).transpose()[::-1,:], aspect='auto',
-                 extent=[np.min(bs), np.max(bs), np.min(ks), np.max(ks)],
+                 extent=[np.min(bs), np.max(bs), np.min(np.log(ks)), np.max(np.log(ks))],
                  vmin=0, vmax=1, cmap=cmap)
     ax[1].set_xlabel(r'$b$: number of interactions')
     ax[1].set_ylabel(r'$k$: recover fraction')
+    ax[1].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
 
     ax[2].imshow(its2.mean(axis=2)[::-1,:], aspect='auto',
-                 extent=[np.min(fs), np.max(fs), np.min(bs), np.max(bs)],
+                 extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(bs), np.max(bs)],
                  vmin=0, vmax=1, cmap=cmap)
     ax[2].set_xlabel(r'$f$: infected fraction')
+    ax[2].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[2].set_ylabel(r'$b$: number of interactions')
 
     plt.subplots_adjust(wspace = 0.3)
@@ -120,7 +126,7 @@ def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     if title:
         f.text(0.5, 0.99, title, ha='center', fontsize=14)
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
 
 def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
@@ -133,15 +139,14 @@ def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
     ax.set_xlabel('b')
     ax.set_ylabel('f')
     ax.set_zlabel('k')
-    def log_tick_formatter(val, pos=None):
-        return "{:.2f}".format(np.exp(val))
+    
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     fig.colorbar(scat, pad=0.2, shrink=0.8)
     if title:
         plt.title(title)
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
 
 grid_size = 20
