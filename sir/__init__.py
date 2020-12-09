@@ -1,2 +1,2 @@
-from .agent import *
-from .ode import *
+from . import agent
+from . import ode

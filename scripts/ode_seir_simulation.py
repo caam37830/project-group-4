@@ -1,6 +1,6 @@
 import sys
-sys.path.append('../sir')
-from ode_seir import ode_simulation
+sys.path.append('../')
+from sir.ode_seir import ode_simulation
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
