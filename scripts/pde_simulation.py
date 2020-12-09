@@ -83,5 +83,26 @@ plot_time(s, i, r, "random place")
 # plt.savefig("../docs/figs/pde_2d_time_random.png", dpi=500)
 
 
+# 1 + 1 + n
+res = []
+p = 0.005 / M
+pos = (M // 2, M // 2)
+res.append(pde_model(i0, pos, M, T, b, k, p))
 
+pos = (0, 0)
+res.append(pde_model(i0, pos, M, T, b, k, p))
+
+for _ in range(10):
+    pos = (np.random.randint(0, M), np.random.randint(0, M))
+    res.append(pde_model(i0, pos, M, T, b, k, p))
+    
+res = np.asarray(res).mean(axis=(2,3))
+
+plt.plot(res[0,1,:], color='r', label="center")
+plt.plot(res[1,1,:], color='g', label="corner")
+plt.plot(res[2,1,:], color='b', label="random")
+for i in range(3, 12):
+    plt.plot(res[i,1,:], color='b')
+plt.legend()
+# plt.savefig("../docs/figs/pde_loc.png", dpi=300)
 
