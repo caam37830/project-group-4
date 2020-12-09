@@ -6,8 +6,9 @@ Implement tests for the two models
 import unittest
 import sys
 import os
-sys.path.append(os.getcwd())
-from sir import *
+sys.path.append('../')
+from sir.agent import Person
+from sir.ode import ode_model
 
 
 
