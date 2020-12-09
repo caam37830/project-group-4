@@ -29,8 +29,16 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest test/test.py
-    - name: Run script
+        cd test
+        pytest test.py
+        cd ../
+    - name: Run modules
       run: |
-        python sir/*.py
-        python scripts/*.py
+        cd sir
+        python *.py
+        cd ../
+    - name: Run scripts
+      run: |
+        cd scripts
+        python *.py
+        cd ../
