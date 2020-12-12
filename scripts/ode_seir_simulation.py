@@ -58,10 +58,11 @@ def plot_f_effect(fs, T=T, b=b, f=f, k=k, save_as=None):
     fig.text(0.5, 0.04, 'Time', va='center', ha='center')
     fig.text(0.04, 0.5, 'Fraction', va='center', ha='center', rotation='vertical')
     if save_as:
-        plt.savefig(f'../output/{save_as}.png', dpi=300)
+        plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
 fs = np.logspace(-2,0,10)
-plot_f_effect(fs, save_as='ode_seir_by_f')
+plot_f_effect(fs)
+# plot_f_effect(fs, save_as='ode_seir_by_f')
 
 
 
@@ -130,6 +131,8 @@ def plot_phase_2d(bfks, its, cmap='OrRd', title=None, save_as=None):
     if save_as:
         plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
 
+    return f, ax
+
 
 def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
 
@@ -149,6 +152,7 @@ def plot_phase_3d(bfks, its, cmap='OrRd', title=None, save_as=None):
         plt.title(title)
     if save_as:
         plt.savefig(f'../docs/figs/{save_as}.png', dpi=300)
+    return ax
 
 
 grid_size = 20
@@ -164,10 +168,85 @@ plot_phase_2d(bfks, itss[:,t], title=f't = {t}', save_as='ode_seir_phase_2d')
 plot_phase_3d(bfks, itss[:,t], title=f't = {t}', save_as='ode_seir_phase_3d')
 
 # plot along time
-for t in range(T//2+1):
-    plot_phase_2d(bfks, itss[:,t], title=f't = {t}')
-    plt.show()
+# for t in range(T//2+1):
+#     plot_phase_2d(bfks, itss[:,t], title=f't = {t}')
+#     plt.show()
+#
+# for t in range(T+1):
+#     plot_phase_3d(bfks, itss[:,t], title=f't = {t}')
+#     plt.show()
 
-for t in range(T+1):
-    plot_phase_3d(bfks, itss[:,t], title=f't = {t}')
-    plt.show()
+
+# 2-d phase GIF
+import matplotlib.animation as animation
+
+def plot_phase_2d_gif(bfks, itss, Tmax=T):
+    bs, fs, ks = (np.unique(bfks[:, i]) for i in range(3))
+    cmap = 'OrRd'
+
+    fig, ax = plt.subplots(1, 3, figsize=(15,4), dpi=200)
+    plt.subplots_adjust(wspace = 0.3)
+    ax[0].set_xlabel(r'$f$: infected fraction')
+    ax[0].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax[0].set_ylabel(r'$k$: recover fraction')
+    ax[0].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax[1].set_xlabel(r'$b$: number of interactions')
+    ax[1].set_ylabel(r'$k$: recover fraction')
+    ax[1].yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax[2].set_xlabel(r'$f$: infected fraction')
+    ax[2].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax[2].set_ylabel(r'$b$: number of interactions')
+
+    ims = []
+    for t in range(Tmax+1):
+        its2 = itss[:,t].reshape(len(bs), len(fs), len(ks))
+        im0 = ax[0].imshow(its2.mean(axis=0).transpose()[::-1,:], aspect='auto',
+                     extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(np.log(ks)), np.max(np.log(ks))],
+                     vmin=0, vmax=1, cmap=cmap)
+
+        im1 = ax[1].imshow(its2.mean(axis=1).transpose()[::-1,:], aspect='auto',
+                     extent=[np.min(bs), np.max(bs), np.min(np.log(ks)), np.max(np.log(ks))],
+                     vmin=0, vmax=1, cmap=cmap)
+        im2 = ax[2].imshow(its2.mean(axis=2)[::-1,:], aspect='auto',
+                     extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(bs), np.max(bs)],
+                     vmin=0, vmax=1, cmap=cmap)
+        ttl = plt.text(0.5, 1.1, f't = {t}', horizontalalignment='center', verticalalignment='bottom', transform=ax[1].transAxes)
+        ims.append([im0, im1, im2, ttl]) # add subplots to a list
+        # detail about title: https://stackoverflow.com/questions/47421486/matplotlib-artist-animation-title-or-text-not-changing/47421938
+    ani = animation.ArtistAnimation(fig, ims, interval=100, blit=False)
+    ani.save("../docs/figs/ode_seir_phase_2d.gif", writer='pillow')
+
+plot_phase_2d_gif(bfks, itss, Tmax=100)
+
+
+# 3d phase gif
+def update(t, x, y, z, ax):
+    ax.clear()
+    ax.scatter3D(x, y, z,
+                c=itss[:,t], cmap=cmap, vmin=0, vmax=1, alpha=0.2, linewidths=0)
+
+    ax.set_title(f't = {t}')
+    ax.set_xlabel('b')
+    ax.set_ylabel('f')
+    ax.set_zlabel('k')
+    return ax
+
+def plot_phase_3d_gif(bfks, itss, Tmax=T):
+    fig = plt.figure(dpi=200, figsize=(6, 4))
+    ax = fig.add_subplot(111, projection='3d')
+    scat = ax.scatter3D(bfks[:,0], np.log(bfks[:,1]), np.log(bfks[:,2]),
+                        c=itss[:,0], cmap='OrRd', vmin=0, vmax=1, alpha=0.2, linewidths=0)
+    ax.set_xlabel('b')
+    ax.set_ylabel('f')
+    ax.set_zlabel('k')
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+
+    colbar = fig.colorbar(scat, pad=0.2, shrink=0.8)
+    colbar.set_label(r'      $i(t)$', rotation=0)
+    x, y, z = bfks[:,0], np.log(bfks[:,1]), np.log(bfks[:,2])
+    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(x, y, z, ax),
+                                    interval=100, blit=False)
+    ani.save("../docs/figs/ode_seir_phase_3d.gif", writer='pillow')
+
+plot_phase_3d_gif(bfks, itss, Tmax=T)
