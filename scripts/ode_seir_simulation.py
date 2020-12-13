@@ -10,8 +10,6 @@ from mpl_toolkits.mplot3d import Axes3D
 import itertools as it
 import matplotlib.ticker as mticker
 
-
-
 # global hyper parameters
 N = 1000 # 1000 is enough for ode to generate smooth lines
 T = 100
@@ -180,9 +178,8 @@ plot_phase_3d(bfks, itss[:,t], title=f't = {t}', save_as='ode_seir_phase_3d')
 # 2-d phase GIF
 import matplotlib.animation as animation
 
-def plot_phase_2d_gif(bfks, itss, Tmax=T):
+def plot_phase_2d_gif(bfks, itss, Tmax=T, cmap='OrRd'):
     bs, fs, ks = (np.unique(bfks[:, i]) for i in range(3))
-    cmap = 'OrRd'
 
     fig, ax = plt.subplots(1, 3, figsize=(15,4), dpi=200)
     plt.subplots_adjust(wspace = 0.3)
@@ -196,6 +193,7 @@ def plot_phase_2d_gif(bfks, itss, Tmax=T):
     ax[2].set_xlabel(r'$f$: infected fraction')
     ax[2].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax[2].set_ylabel(r'$b$: number of interactions')
+
 
     ims = []
     for t in range(Tmax+1):
@@ -213,6 +211,9 @@ def plot_phase_2d_gif(bfks, itss, Tmax=T):
         ttl = plt.text(0.5, 1.1, f't = {t}', horizontalalignment='center', verticalalignment='bottom', transform=ax[1].transAxes)
         ims.append([im0, im1, im2, ttl]) # add subplots to a list
         # detail about title: https://stackoverflow.com/questions/47421486/matplotlib-artist-animation-title-or-text-not-changing/47421938
+    cbaxes = fig.add_axes([0.93, 0.12, 0.02, 0.76]) # (x, y, width, height)
+    colbar = fig.colorbar(im2, cax=cbaxes) # pad=0.2)
+    colbar.set_label(r'      $i(t)$', rotation=0)
     ani = animation.ArtistAnimation(fig, ims, interval=100, blit=False)
     ani.save("../docs/figs/ode_seir_phase_2d.gif", writer='pillow')
 
@@ -220,7 +221,7 @@ plot_phase_2d_gif(bfks, itss, Tmax=100)
 
 
 # 3d phase gif
-def update(t, x, y, z, ax):
+def update(t, x, y, z, ax, cmap='OrRd'):
     ax.clear()
     ax.scatter3D(x, y, z,
                 c=itss[:,t], cmap=cmap, vmin=0, vmax=1, alpha=0.2, linewidths=0)
@@ -229,13 +230,15 @@ def update(t, x, y, z, ax):
     ax.set_xlabel('b')
     ax.set_ylabel('f')
     ax.set_zlabel('k')
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.zaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     return ax
 
-def plot_phase_3d_gif(bfks, itss, Tmax=T):
+def plot_phase_3d_gif(bfks, itss, Tmax=T, cmap='OrRd'):
     fig = plt.figure(dpi=200, figsize=(6, 4))
     ax = fig.add_subplot(111, projection='3d')
     scat = ax.scatter3D(bfks[:,0], np.log(bfks[:,1]), np.log(bfks[:,2]),
-                        c=itss[:,0], cmap='OrRd', vmin=0, vmax=1, alpha=0.2, linewidths=0)
+                        c=itss[:,0], cmap=cmap, vmin=0, vmax=1, alpha=0.2, linewidths=0)
     ax.set_xlabel('b')
     ax.set_ylabel('f')
     ax.set_zlabel('k')
@@ -245,8 +248,8 @@ def plot_phase_3d_gif(bfks, itss, Tmax=T):
     colbar = fig.colorbar(scat, pad=0.2, shrink=0.8)
     colbar.set_label(r'      $i(t)$', rotation=0)
     x, y, z = bfks[:,0], np.log(bfks[:,1]), np.log(bfks[:,2])
-    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(x, y, z, ax),
+    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(x, y, z, ax, cmap),
                                     interval=100, blit=False)
     ani.save("../docs/figs/ode_seir_phase_3d.gif", writer='pillow')
 
-plot_phase_3d_gif(bfks, itss, Tmax=T)
+plot_phase_3d_gif(bfks, itss, Tmax=100)

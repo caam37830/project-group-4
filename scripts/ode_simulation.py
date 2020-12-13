@@ -106,3 +106,23 @@ f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
 f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
 # plt.savefig("output/ode_phase_plot.png", dpi=200)
 f.savefig('../docs/figs/ode_phase_plot.png', dpi=300)
+
+# phase diagram gif
+
+def update():
+    ax.clear()
+
+def phase_gif(results_large, Tmax=T, )
+    fig, ax = plt.figure(dpi=200, figsize=(5,5))
+    im = ax.imshow(results_large[::-1,:,1,t],
+                     extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
+                     vmin=0, vmax=1, cmap='OrRd')
+    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.set_title(f"t = {t}")
+    ax.set_xlabel('k: recover fraction')
+    ax.set_ylabel('b: number of interactions')
+    colbar = fig.colorbar(im, pad=0.2, shrink=0.8)
+    colbar.set_label(r'      $i(t)$', rotation=0)
+    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(x, y, z, ax, cmap),
+                                    interval=100, blit=False)
+    ani.save("../docs/figs/ode_seir_phase_3d.gif", writer='pillow')
