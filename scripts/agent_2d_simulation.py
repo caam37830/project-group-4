@@ -246,14 +246,19 @@ def plot_spread_gif(p, Tmax=T, save_as=None):
     if save_as:
         ani.save(f"../docs/figs/{save_as}.gif", writer='pillow')
 
+
 np.random.seed(0)
+its = np.zeros((1,3))
 plot_spread_gif(0,Tmax=100,save_as='agent_2d_spread_p0_isolated')
 
 np.random.seed(1)
-plot_spread_gif(0,Tmax=100,save_as='agent_2d_spread_p0_isolated')
+its = np.zeros((1,3))
+plot_spread_gif(0,Tmax=100,save_as='agent_2d_spread_p0')
 
 np.random.seed(0)
-plot_spread_gif(0.5,Tmax=100,save_as='agent_2d_spread_p05 ')
+its = np.zeros((1,3))
+plot_spread_gif(0.5,Tmax=100,save_as='agent_2d_spread_p05')
 
 np.random.seed(0)
-plot_spread_gif(1,Tmax=100,save_as='agent_2d_spread_p1 ')
+its = np.zeros((1,3))
+plot_spread_gif(1,Tmax=100,save_as='agent_2d_spread_p1')
