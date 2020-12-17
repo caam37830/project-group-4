@@ -64,7 +64,7 @@ ps = np.linspace(0,1,10)
 r_ps = simulate_step(ps)
 plot_step_effect(r_ps,'agent_2d_by_p')
 
-
+# investigate different starting positions
 cols = ['pink','lime','cyan']
 def simulate_pos(p, n1 = 5, n2 = 5, n3 = 20):
     results = np.zeros(((n1 + n2 + n3), T + 1, 3))
@@ -94,6 +94,7 @@ def plot_loc_effect_2d(results, p, n1 = 5,n2 = 5,n3 = 20, save_as=None):
     plt.legend(custom_lines, ['center', 'corner', 'random'])
     plt.xlabel("Time")
     plt.ylabel("Infectious Rate")
+    plt.ylim(0,1)
     plt.title(f"Infectious Rate by Different Starting Position with p = {p}")
     if save_as != None:
         plt.savefig(f'../docs/figs/agent_loc_p_{save_as}.png', dpi=300)
@@ -110,7 +111,7 @@ r_p1 = simulate_pos(p)
 plot_loc_effect_2d(r_p1,p,save_as=p)
 
 
-# show spread in 2-d scatter plots . take snapshots at certain time points
+# show spread in 2-d scatter plots . take snapshots at certain timestamps
 T = [0,2,4,6,10]
 loc = ['center','corner','random']
 
@@ -262,3 +263,31 @@ plot_spread_gif(0.5,Tmax=100,save_as='agent_2d_spread_p05')
 np.random.seed(0)
 its = np.zeros((1,3))
 plot_spread_gif(1,Tmax=100,save_as='agent_2d_spread_p1')
+
+
+# average actual step size
+ps = np.linspace(0,1.5,151)
+avg_moves_p = []
+for p in tqdm(ps):
+    for i in range(100):
+        avg_moves = []
+        pop = Population2d(500000, 0)
+        pos0 = pop.s_info[:,1:].copy()
+        pop.move(p)
+        # pop.simulation(T=1, p=0.2, q=0.1, k=0.1, plot_time_interval=1)
+        pos1 = pop.s_info[:,1:]
+        pos0[0]
+        pos1[0]
+        diff = pos1-pos0
+        avg_moves.append(np.linalg.norm(diff,axis=1).mean())
+    avg_moves_p.append(np.mean(avg_moves))
+
+
+plt.plot(ps, avg_moves_p)
+plt.xlabel(r'target step size $p$')
+plt.ylabel(r'averaged actual step size $\bar p$')
+max_indx = np.argmax(avg_moves_p)
+plt.plot(ps[max_indx],avg_moves_p[max_indx],'ko')
+show_max = f'    target = {np.round(ps[max_indx],2)}, actual = {np.round(avg_moves_p[max_indx],2)}'
+plt.annotate(show_max,xy=(ps[max_indx],avg_moves_p[max_indx]))
+plt.savefig('../docs/figs/agent_2d_actual_step2.png', dpi=300)

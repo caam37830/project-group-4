@@ -93,7 +93,7 @@ def log_tick_formatter(val, pos=None):
 
 def phase_plot_ts(results, bs, ks, ts):
     f, ax = plt.subplots(1, 3, figsize=(16,4))
-    for i, t in enumerate(ts): # three time points
+    for i, t in enumerate(ts): # three timestamps
         m = ax[i].imshow(results[::-1,:,1,t],
                          extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
                          vmin=0, vmax=1, cmap='OrRd')
