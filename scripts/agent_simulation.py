@@ -29,7 +29,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import randint, rand, choice
 import matplotlib.ticker as mticker
-
+import matplotlib.animation as animation
 
 def count_sir(pop):
     I = sum(p.is_infected() for p in pop)
@@ -116,6 +116,51 @@ f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsi
 # plt.savefig("output/agent_facet_plot.png")
 
 # phase diagram
+# phase diagram at time t
+
+def log_tick_formatter(val, pos=None):
+    return "{:.2f}".format(np.exp(val))
+
+def phase_plot_ts(results, bs, ks, ts):
+    f, ax = plt.subplots(1, 3, figsize=(16,4))
+    for i, t in enumerate([5, 10, 50]):
+        m = ax[i].imshow(results[::-1,:,t,1],
+                         extent=[np.min(np.log(p_ks)), np.max(np.log(p_ks)), np.min(p_bs), np.max(p_bs)],
+                         vmin=0, vmax=1, cmap='OrRd')
+        ax[i].axis('auto')
+        ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+
+        ax[i].set_title("t = {}".format(t))
+    f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
+    f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
+    f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
+    f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
+    plt.savefig("../docs/figs/agent_phase_plot.png", dpi=300)
+
+def update(t, bs, ks, ax, cmap='OrRd'):
+    ax.clear()
+    ax.imshow(p_results[::-1,:,t,1], aspect='auto',
+                     extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
+                     vmin=0, vmax=1, cmap=cmap)
+    ax.set_title(f"t = {t}")
+    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.set_xlabel('k: recover fraction')
+    ax.set_ylabel('b: number of interactions')
+    return ax
+
+def phase_plot_gif(results, Tmax=T, cmap='OrRd'):
+    fig, ax = plt.subplots(dpi=200, figsize=(6,4))
+    im = ax.imshow(results[::-1,:,0,1], aspect='auto', extent=[np.min(np.log(p_ks)), np.max(np.log(p_ks)), np.min(p_bs), np.max(p_bs)], vmin=0, vmax=1, cmap=cmap)
+    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.set_xlabel('k: recover fraction')
+    ax.set_ylabel('b: number of interactions')
+    colbar = fig.colorbar(im, pad=0.2, shrink=0.8)
+    colbar.set_label(r'      $i(t)$', rotation=0)
+    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(p_bs, p_ks, ax, cmap),
+                                    interval=100, blit=False)
+    ani.save("../docs/figs/agent_phase_plot.gif", writer='pillow')
+
+
 grid_size = 20
 p_bs = np.arange(1, grid_size+1, dtype=np.int64)
 p_ks = np.logspace(-2, 0, grid_size)
@@ -127,24 +172,8 @@ for i, b in enumerate(p_bs):
         # p_results[i,j,...] = counts_sir / N
         pop = Population(N, 0.001)
         p_results[i,j,...] = pop.simulation(b=b,k=k,T=T)
-# phase diagram at time t
-#t = 10
 
-def log_tick_formatter(val, pos=None):
-    return "{:.2f}".format(np.exp(val))
-
-
-f, ax = plt.subplots(1, 3, figsize=(16,4))
-for i, t in enumerate([5, 10, 50]):
-    m = ax[i].imshow(p_results[::-1,:,t,1],
-                     extent=[np.min(np.log(p_ks)), np.max(np.log(p_ks)), np.min(p_bs), np.max(p_bs)],
-                     vmin=0, vmax=1, cmap='OrRd')
-    ax[i].axis('auto')
-    ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
-
-    ax[i].set_title("t = {}".format(t))
-f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
-f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
-f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
-f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-plt.savefig("../docs/figs/agent_phase_plot.png", dpi=300)
+p_results.shape
+ts = [5, 10, 50]
+phase_plot_ts(p_results, p_bs, p_ks, ts)
+phase_plot_gif(p_results, Tmax=100)

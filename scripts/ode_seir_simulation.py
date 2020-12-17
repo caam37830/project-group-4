@@ -201,7 +201,6 @@ def plot_phase_2d_gif(bfks, itss, Tmax=T, cmap='OrRd'):
         im0 = ax[0].imshow(its2.mean(axis=0).transpose()[::-1,:], aspect='auto',
                      extent=[np.min(np.log(fs)), np.max(np.log(fs)), np.min(np.log(ks)), np.max(np.log(ks))],
                      vmin=0, vmax=1, cmap=cmap)
-
         im1 = ax[1].imshow(its2.mean(axis=1).transpose()[::-1,:], aspect='auto',
                      extent=[np.min(bs), np.max(bs), np.min(np.log(ks)), np.max(np.log(ks))],
                      vmin=0, vmax=1, cmap=cmap)

@@ -28,7 +28,7 @@ from sir.ode import ode_model
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-
+import matplotlib.animation as animation
 
 
 def plot_sim(result, b, k, ax, accessory=True):
@@ -65,64 +65,75 @@ plot_sim(ode_model(i0, T, b, k), b, k, ax)
 
 
 # facet plot
+
+def facet_plot(results, bs, ks):
+    f, ax = plt.subplots(len(bs), len(ks), figsize=(20, 16), sharex=True, sharey=True)
+    for i, b in enumerate(bs):
+        for j, k in enumerate(ks):
+            plot_sim(results[i,j], b, k, ax[i,j], accessory=False)
+
+    for i, b in enumerate(bs):
+        ax[i,0].set_ylabel("b = {}".format(b))
+    for j, k in enumerate(ks):
+        ax[0,j].set_title("k = {:.2f}".format(k))
+    ax[0,-1].legend()
+    f.text(0.5, 0.95, 'Facet Diagram for Different Parameter Values', ha='center', fontsize=18)
+    f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
+    f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
+    # plt.savefig("output/ode_facet_plot.png")
+
 bs = np.arange(1, 11, 2, dtype=np.int64)
 ks = np.logspace(-2, 0, 5)
 results_small = run_sim(i0, T, bs, ks)
+facet_plot(results_small, bs, ks)
 
-f, ax = plt.subplots(len(bs), len(ks), figsize=(20, 16), sharex=True, sharey=True)
-for i, b in enumerate(bs):
-    for j, k in enumerate(ks):
-        plot_sim(results_small[i,j], b, k, ax[i,j], accessory=False)
-
-for i, b in enumerate(bs):
-    ax[i,0].set_ylabel("b = {}".format(b))
-for j, k in enumerate(ks):
-    ax[0,j].set_title("k = {:.2f}".format(k))
-ax[0,-1].legend()
-f.text(0.5, 0.95, 'Facet Diagram for Different Parameter Values', ha='center', fontsize=18)
-f.text(0.5, 0.08, 'Time', ha='center', fontsize=14)
-f.text(0.08, 0.5, 'Fraction of People', va='center', rotation='vertical', fontsize=14)
-# plt.savefig("output/ode_facet_plot.png")
-
-# phase diagram at time t
+# phase diagram at time t1, t2 etc
 def log_tick_formatter(val, pos=None):
     return "{:.2f}".format(np.exp(val))
 
-bs = np.arange(1, 20, dtype=np.int64)
-ks = np.logspace(-2, 0, 20)
-results_large = run_sim(i0, T, bs, ks)
-
-f, ax = plt.subplots(1, 3, figsize=(16,4))
-for i, t in enumerate([5, 10, 50]):
-    m = ax[i].imshow(results_large[::-1,:,1,t],
-                     extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
-                     vmin=0, vmax=1, cmap='OrRd')
-    ax[i].axis('auto')
-    ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
-    ax[i].set_title(f"t = {t}")
-f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
-f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
-f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
-f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
-# plt.savefig("output/ode_phase_plot.png", dpi=200)
-f.savefig('../docs/figs/ode_phase_plot.png', dpi=300)
+def phase_plot_ts(results, bs, ks, ts):
+    f, ax = plt.subplots(1, 3, figsize=(16,4))
+    for i, t in enumerate(ts): # three time points
+        m = ax[i].imshow(results[::-1,:,1,t],
+                         extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
+                         vmin=0, vmax=1, cmap='OrRd')
+        ax[i].axis('auto')
+        ax[i].xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+        ax[i].set_title(f"t = {t}")
+    f.colorbar(m, ax=[ax[0],ax[1],ax[2]])
+    f.text(0.5, 0.95, 'Phase Diagram of Infection Rate at Different Times', ha='center', fontsize=14)
+    f.text(0.5, 0.01, 'k: recover fraction', ha='center', fontsize=12)
+    f.text(0.08, 0.5, 'b: number of interactions', va='center', rotation='vertical', fontsize=12)
+    # plt.savefig("output/ode_phase_plot.png", dpi=200)
+    f.savefig('../docs/figs/ode_phase_plot.png', dpi=300)
 
 # phase diagram gif
-
-def update():
+def update(t, bs, ks, ax, cmap='OrRd'):
     ax.clear()
-
-def phase_gif(results_large, Tmax=T, )
-    fig, ax = plt.figure(dpi=200, figsize=(5,5))
-    im = ax.imshow(results_large[::-1,:,1,t],
+    ax.imshow(results_large[::-1,:,1,t], aspect='auto',
                      extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)],
-                     vmin=0, vmax=1, cmap='OrRd')
-    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+                     vmin=0, vmax=1, cmap=cmap)
     ax.set_title(f"t = {t}")
+    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
+    ax.set_xlabel('k: recover fraction')
+    ax.set_ylabel('b: number of interactions')
+    return ax
+
+def phase_plot_gif(results, Tmax=T, cmap='OrRd'):
+    fig, ax = plt.subplots(dpi=200, figsize=(6,4))
+    im = ax.imshow(results[::-1,:,1,0], aspect='auto', extent=[np.min(np.log(ks)), np.max(np.log(ks)), np.min(bs), np.max(bs)], vmin=0, vmax=1, cmap=cmap)
+    ax.xaxis.set_major_formatter(mticker.FuncFormatter(log_tick_formatter))
     ax.set_xlabel('k: recover fraction')
     ax.set_ylabel('b: number of interactions')
     colbar = fig.colorbar(im, pad=0.2, shrink=0.8)
     colbar.set_label(r'      $i(t)$', rotation=0)
-    ani = animation.FuncAnimation(fig, update, frames=Tmax+1, fargs=(x, y, z, ax, cmap),
+    ani = animation.FuncAnimation(fig, update, frames=Tmax, fargs=(bs, ks, ax, cmap),
                                     interval=100, blit=False)
-    ani.save("../docs/figs/ode_seir_phase_3d.gif", writer='pillow')
+    ani.save("../docs/figs/ode_phase_plot.gif", writer='pillow')
+
+bs = np.arange(1, 21, dtype=np.int64)
+ks = np.logspace(-2, 0, 20)
+results_large = run_sim(i0, T, bs, ks)
+ts = [5, 10, 50]
+phase_plot_ts(results_large, bs, ks, ts)
+phase_plot_gif(results_large, Tmax=100)
