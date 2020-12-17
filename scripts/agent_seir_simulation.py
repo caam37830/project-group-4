@@ -9,6 +9,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
 import itertools as it
 import matplotlib.ticker as mticker
+import matplotlib.animation as animation
 
 # global hyper parameters
 N = 10000
@@ -174,8 +175,6 @@ plot_phase_3d(bfks, itss[:,t], title=f'$i({t})$', save_as='agent_seir_phase_3d')
 #     plot_phase_3d(bfks, itss[:,t], title=f't = {t}')
 #     plt.show()
 
-
-import matplotlib.animation as animation
 
 def plot_phase_2d_gif(bfks, itss, Tmax=T, cmap = 'OrRd'):
     bs, fs, ks = (np.unique(bfks[:, i]) for i in range(3))

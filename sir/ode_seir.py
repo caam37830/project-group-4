@@ -1,7 +1,8 @@
 """
 This module includes functions for the ODE model.
 """
-
+import sys
+sys.path.append('../sir')
 import numpy as np
 from scipy.integrate import solve_ivp
 

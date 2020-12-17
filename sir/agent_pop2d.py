@@ -133,7 +133,7 @@ class Population2d():
         """
         simulate the spread for T days
         return:
-            SIRs, shape (T, 3), record of daily S, I, R
+            SIRs, shape (T+1, 3), record of daily S, I, R
             if record_time, also return the computation time of each step move(), infect(), recover()
         """
         SIRs = np.array(self.count_SIR())

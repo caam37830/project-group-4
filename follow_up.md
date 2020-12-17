@@ -1,16 +1,17 @@
 
-- gif plot
-  参数的话可以从小到大从大到小
-  时间的话就单项
+- add gif plot
+
   - ✅basic SIR phase
     - ❓but agent's figures have bold texts. weird.
-  - 2d, transmission，可以2*2，还有个方格子放line plot
+  - 2d, transmission，4 subplots，include a gif line plot
   - ✅seir, phase
     - 2d
     - 3d
     - ❓but agent's figures have bold texts. weird.
 
-- granularity of n1+n2+n3
+- increase granularity of n1+n2+n3
+  - agent
+    depends on N and I, not i0 alone
   - 2d, lines
     - also change color and rgb
 
@@ -18,3 +19,5 @@
   - average actual step size
     - simulation
     - integral
+
+- ✅add more test cases
