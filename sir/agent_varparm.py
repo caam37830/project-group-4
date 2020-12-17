@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../sir')
 import numpy as np
 from agent_pop import Population
 from typing import Union

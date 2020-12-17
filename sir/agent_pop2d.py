@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../sir')
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import KDTree

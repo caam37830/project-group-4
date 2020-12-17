@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../sir')
 import numpy as np
 from scipy.integrate import solve_ivp
 
@@ -23,9 +25,9 @@ def pde_model(i0, pos, M, T, b, k, p):
         k: the fraction of the infectious population which recovers each day
         p: parameter for diffusion
     """
-    
+
     D = diff_matrix(M)
-    
+
     def f(t, y):
         y = y.reshape((3,M,M))
         res = np.zeros((3,M,M))
@@ -33,14 +35,14 @@ def pde_model(i0, pos, M, T, b, k, p):
         res[1] = b * y[0] * y[1] - k * y[1] + (D @ y[1] + y[1] @ D.T) * p * M**2
         res[2] = k * y[1] + (D @ y[2] + y[2] @ D.T) * p * M**2
         return res.flatten()
-    
+
     y0 = np.zeros((3,M,M))
     y0[0] = 1                 # all people are susceptible
     y0[1,pos[0],pos[1]] = i0  # initial infection
     y0 = y0.flatten()
-    
+
     t_span = (0, T)
     t_eval = np.linspace(0, T, int(T)+1)
-    
+
     sol = solve_ivp(f, t_span, y0, t_eval=t_eval, vectorized=True, atol=1e-8)
     return sol.y.reshape((3,M,M,int(T)+1))
