@@ -14301,7 +14301,7 @@ a.anchor-link {
 <li>Recovered - (aka. removed) individuals who were previously infectious, and either have recovered and are now immune, or have died. Either way they can not get the disease again or infect susceptible individuals.</li>
 </ol>
 <p>We use $S(t)$, $I(t)$ and $R(t)$ to denote the number of individuals in each category above at time $t$, and $N$ to denote the total number of individuals, so $S(t) + I(t) + R(t) = N$ at all times. We define the corresponding fractions for each group by $s(t) = S(t) / N$, $i(t) = I(t) / N$, and $r(t) = R(t) / N$, so $s(t) + i(t) + r(t) = 1$ at all times.</p>
-<p>In the plots blow, we will use blue for <font color='blue'>suseptible</font>, orange for <font color='orange'>infectious</font> and green for <font color='green'>recoverd</font>.</p>
+<p>In the plots blow, we will use blue for <font color='blue'>susceptible</font>, orange for <font color='orange'>infectious</font> and green for <font color='green'>recovered</font>.</p>
 
 </div>
 </div>
@@ -14339,13 +14339,9 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We get the following phase diagram of the infectious rate $i(t)$ by $b,k$ using the agent-based model in the midterm checkpoint:</p>
-<p><img style="float: center;" src="figs/agent_phase_plot.gif" width="40%"></p>
-<p>In particular, we can take a look at three timestamps during the spread of the disease
-<img style="float: center;" src="figs/agent_phase_plot.png"></p>
-<p>The results of the ODE model are similar but the colors change more smoothly. This is because unlike the agend-based model, there is randomness in the ODE model.</p>
-<p><img style="float: center;" src="figs/ode_phase_plot.gif" width="40%"></p>
-<p><img style="float: center;" src="figs/ode_phase_plot.png"></p>
-<p>We now choose $b$ and $k$ near the phase transition boundary for in-depth analysis in the later sections.</p>
+<div align="center"><img src="figs/agent_phase_plot.gif" width="40%"></div><p>In particular, we can take a look at three timestamps during the spread of the disease</p>
+<div align="center"><img src="figs/agent_phase_plot.png"></div><p>The results of the ODE model are similar but the colors change more smoothly. This is because unlike the agent-based model, there is randomness in the ODE model.</p>
+<div align="center"><img src="figs/ode_phase_plot.gif" width="40%"></div><div align="center"><img src="figs/ode_phase_plot.png"></div><p>We now choose $b$ and $k$ near the phase transition boundary for in-depth analysis in the later sections.</p>
 <p>From the plots we can see that for the late stage such as $t = 50$, when $b$ does not matter that much anymore, $k = 0.05$ seems to be the boundary of completely white and a little colorful, so we will choose this $k$. For the early stage such as $t = 5$, when $b$ does have an effect, the boundary seems to be around 5, so we choose $b = 7$ for the agent-based model and $b = 5$ for the PDE model.</p>
 
 </div>
@@ -14370,8 +14366,7 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><strong>Effect of step size $p$</strong></p>
 <p>To investigate how infected will change over $p$, we run 20 simulations with $p$ equally spaced between 0 to 1. The results of $s(t)$, $i(t)$ and $r(t)$ change over $p$ is shown below.</p>
-<p><img style="float: center;" src="figs/agent_2d_by_p.png" width="80%"></p>
-<p>The depth of color indicates the magnitude of $p$ The darker color indicates larger value $p$ From the plot, we can see that with $p$ starting at 0 (the lightest line,) the $s(t)$ lines sknew toward right as $p$ increases, and the peak of the infectious rate also increases. The max of the peak reaches at approximately $p = 0.5$, with $i$ approximately equal to 0.8. Then the lines start skew toward left, and the peaks start to decrease again. This result is due to we limit the agent mobility by setting them stay at the same position if their move is out of bound. If $p$ is too large, agents are equivalte to not move. Thus both of the spread and the maximum of infectious rate will decrease.</p>
+<div align="center"><img src="figs/agent_2d_by_p.png" width="80%"></div><p>The depth of color indicates the magnitude of $p$ The darker color indicates larger value $p$ From the plot, we can see that with $p$ starting at 0 (the lightest line,) the $s(t)$ lines skew toward right as $p$ increases, and the peak of the infectious rate also increases. The max of the peak reaches at approximately $p = 0.5$, with $i$ approximately equal to 0.8. Then the lines start skew toward left, and the peaks start to decrease again. This result is due to we limit the agent mobility by setting them stay at the same position if their move is out of bound. If $p$ is too large, agents are equivalent to not move. Thus both of the spread and the maximum of infectious rate will decrease.</p>
 
 </div>
 </div>
@@ -14389,9 +14384,8 @@ a.anchor-link {
 </li>
 <li>take average for all 100 populations</li>
 </ul>
-<p>The averaged actual step size changes with $p$ in the below fasion</p>
-<p><img style="float: center;" src="figs/agent_2d_actual_step.png" width="40%"></p>
-<p>Thus, the optimal $p$ should be around 0.49, with which the agents move the fastest and all three fractions change the fastest.</p>
+<p>The averaged actual step size changes with $p$ in the below fashion</p>
+<div align="center"><img src="figs/agent_2d_actual_step.png" width="40%"></div><p>Thus, the optimal $p$ should be around 0.49, with which the agents move the fastest and all three fractions change the fastest.</p>
 
 </div>
 </div>
@@ -14401,23 +14395,20 @@ a.anchor-link {
 <p>To investigate how starting position of infected will affect the spread, we choose three $p = 0, 0.5, 1$. For each $p$ we run total number of 30 simulations  with 5 sets starting at center, 5 sets starting at corner and 20 sets starting random. The resulted plots are shown below, with $p =0, 0.5, 1$ from left to right.</p>
 <table>
    <tr>
-      <td><img style="float: center;" src="figs/agent_loc_p_0.png" width="100%"><td>
-      <td><img style="float: center;" src="figs/agent_loc_p_0.5.png" width="100%"><td>
-      <td><img style="float: center;" src="figs/agent_loc_p_1.png" width="100%"><td>
+      <td><img src="figs/agent_loc_p_0.png" width="100%"><td>
+      <td><img src="figs/agent_loc_p_0.5.png" width="100%"><td>
+      <td><img src="figs/agent_loc_p_1.png" width="100%"><td>
    </tr>
-</table><p>By comparing the plots, we can conclude that if $p$  is within the middle range, ie. 0.3 - 0.5, the starting positions really does not matter, since the spread of infectious is so quick. The middel point ps indicate agents can freely move around in any direction. Thus, even starting at the corner, the infected people are likely to get to the center at anytime point. With $p$ really small (we set extreme to 0 in this case,) since corner infected can only infect 1/4 of the people around, the spread is much lower than center/random starts. What's more, we can see with some extreme cases, infected might even not be able to spread the virus, with all of them getting recovered without further infection. We also notice that no matter what starting position is, lower mobility (either extreme large $p$ or small $p$) results lower infections rate and spread spead. Thus, stay at home is indeed important to flatten the curve.</p>
+</table><p>By comparing the plots, we can conclude that if $p$  is within the middle range, ie. 0.3 - 0.5, the starting positions really does not matter, since the spread of infectious is so quick. The middle point $p$'s indicate agents can freely move around in any direction. Thus, even starting at the corner, the infected people are likely to get to the center at anytime point. With $p$ really small (we set extreme to 0 in this case,) since corner infected can only infect 1/4 of the people around, the spread is much lower than center/random starts. What's more, we can see with some extreme cases, infected might even not be able to spread the virus, with all of them getting recovered without further infection. We also notice that no matter what starting position is, lower mobility (either extreme large $p$ or small $p$) results lower infections rate and spread. Thus, stay at home is indeed important to flatten the curve.</p>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>To verify our conclusion, we futher visualize the spread of infectious by scatter plots. The below shows an extreme case that with $p = 0$, starting at corner can hardly spread the disease if an infectious agent has no susceptible neighbors in radius $q$. The recover rate outspeed the spread rate. While starting at center and random, it is more likely to spread the disease, since there are more contacts within the radius.</p>
-<p><img style="float: center;" src="figs/agent_2d_spread_p0_isolated.gif"></p>
-<p>With $p = 0.5$, agents move the fastest and all most no people are susceptible within 10 days regardless of the starting points.</p>
-<p><img style="float: center;" src="figs/agent_2d_spread_p05.gif"></p>
-<p>When $p = 1$, the spread is slower than the case when $p = 0.5$. Yet, the peripheral agents still have mobility.</p>
-<p><img style="float: center;" src="figs/agent_2d_spread_p1.gif"></p>
-
+<p>To verify our conclusion, we further visualize the spread of infectious by scatter plots. The below shows an extreme case that with $p = 0$, starting at corner can hardly spread the disease if an infectious agent has no susceptible neighbors in radius $q$. The recover rate outspeed the spread rate. While starting at center and random, it is more likely to spread the disease, since there are more contacts within the radius.</p>
+<div align="center"><img src="figs/agent_2d_spread_p0_isolated.gif"></div><p>With $p = 0.5$, agents move the fastest and all most no people are susceptible within 10 days regardless of the starting points.</p>
+<div align="center"><img src="figs/agent_2d_spread_p05.gif"></div><p>When $p = 1$, the spread is slower than the case when $p = 0.5$. Yet, the peripheral agents still have mobility.</p>
+<div align="center"><img src="figs/agent_2d_spread_p1.gif"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -14474,8 +14465,7 @@ where $s(t),i(t),r(t)$ are the $M\times M$ matrix-valued functions and $s(t)\tim
 <p><strong>How do simulations change with $p$?</strong></p>
 <p>We choose, according to the experiments in the midterm checkpoint, $M = 200$, $i_0 = 0.001$, $T = 100$, $b = 5$, and $k = 0.05$.</p>
 <p>We run the simulation with $p$ in <code>np.logspace(-4, -1, 10) / M</code> and draw the line plots for the mean of $s(t), i(t), r(t)$ where the mean is taken over all the grids. The plots look like (where darker lines correspond to large $p$'s):</p>
-<p><img style="float: center;" src="figs/pde_2d_by_p.png" width="80%"></p>
-<p>We can see that $p$ increases, the number of infectious people reaches its peak earlier and faster. This makes sense because in the PDEs, $p$ is the weight of the Laplacian term, i.e., the spatial diffusion. Hence we should expect that larger $p$ results in faster spread of the disease.</p>
+<div align="center"><img src="figs/pde_2d_by_p.png" width="80%"></div><p>We can see that $p$ increases, the number of infectious people reaches its peak earlier and faster. This makes sense because in the PDEs, $p$ is the weight of the Laplacian term, i.e., the spatial diffusion. Hence we should expect that larger $p$ results in faster spread of the disease.</p>
 <p>Now since the rate of spread is uniformly increasing with $p$, we will choose a moderate $p = 0.001 / M$ so that the simulation can be finished in reasonably short time and the timestamp plots can render a clear evolution of the different populations.</p>
 
 </div>
@@ -14484,13 +14474,10 @@ where $s(t),i(t),r(t)$ are the $M\times M$ matrix-valued functions and $s(t)\tim
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><strong>How do the three populations, with different starting points, evolve with time?</strong></p>
 <p>We fix $p = 0.001 / M$.</p>
-<p>If we start from the center:
-<img style="float: center;" src="figs/pde_2d_spread_center.gif"></p>
-<p>If we start from the corner:
-<img style="float: center;" src="figs/pde_2d_spread_corner.gif"></p>
-<p>If we start from a random point:
-<img style="float: center;" src="figs/pde_2d_spread_random.gif"></p>
-<p>We can see that at first, the infectious population spreads out from the starting point and the susceptible population fades away against the infectious population; then, the recovered population starts to increase, again from the starting point, and chases the infectious population. In the end, all population would become recovered.</p>
+<p>If we start from the center:</p>
+<div align="center"><img src="figs/pde_2d_spread_center.gif"></div><p>If we start from the corner:</p>
+<div align="center"><img src="figs/pde_2d_spread_corner.gif"></div><p>If we start from a random point:</p>
+<div align="center"><img src="figs/pde_2d_spread_random.gif"></div><p>We can see that at first, the infectious population spreads out from the starting point and the susceptible population fades away against the infectious population; then, the recovered population starts to increase, again from the starting point, and chases the infectious population. In the end, all population would become recovered.</p>
 <p>When the starting point is the center, or some random points near the center, the rate of spread is very high such that by time $t = 50$, most of the population are first infected and then recovered. However, when the starting point is the corner, the rate of spread decreases so that by time $t = 50$, only about a quarter of the population are infected and then recovered.</p>
 
 </div>
@@ -14498,8 +14485,7 @@ where $s(t),i(t),r(t)$ are the $M\times M$ matrix-valued functions and $s(t)\tim
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><strong>How does the infectious group change with different starting points?</strong></p>
-<p><img style="float: center;" src="figs/pde_loc.png" width="50%"></p>
-<p>We can see that starting from the center gives much faster spread than the corner, and starting at random points sometimes gives, when the random point is near the center, similar results as starting from the center, and sometimts gives, when the random point is near the corner or the side, similar results as starting from the corner.</p>
+<div align="center"><img src="figs/pde_loc.png" width="50%"></div><p>We can see that starting from the center gives much faster spread than the corner, and starting at random points sometimes gives, when the random point is near the center, similar results as starting from the center, and sometimes gives, when the random point is near the corner or the side, similar results as starting from the corner.</p>
 
 </div>
 </div>
@@ -14532,7 +14518,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 <p>We will investigate how $s(t)$, $i(t)$ and $r(t)$ change with these time-dependent parameters, using an agent-based model and an ODE model. In particular, we consider the following three effects:</p>
 <ul>
 <li><p><strong>Social Distancing</strong></p>
-<p>Social distancing can affect $b$, the number of interactions made by an infecious individual per day. Since social distancing rules take time to be implemented, we use</p>
+<p>Social distancing can affect $b$, the number of interactions made by an infectious individual per day. Since social distancing rules take time to be implemented, we use</p>
 </li>
 </ul>
 \begin{align*}
@@ -14546,7 +14532,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
   k(t) = \begin{cases} 0.01, &amp; t \le 15 \\ 0.1, &amp; 15 &lt; t \le 70 \\ 0.8, &amp; 70 \le t \le 100 \end{cases}
 \end{align*}<ul>
 <li><p><strong>Virus Mutation</strong></p>
-<p>If mutation happens, the virus becomes more infectious. This can be measured by the transmition probability $p$. Holding other constant, if two individuals has an interaction, then we expected $p$ to be higher if the virus becomes more infectious. In the experiments below we use $p=0.1$ for the normal virus first 20 days and $p=0.8$ for the mutated virus in the last 80 days.</p>
+<p>If mutation happens, the virus becomes more infectious. This can be measured by the transmission probability $p$. Holding other constant, if two individuals has an interaction, then we expected $p$ to be higher if the virus becomes more infectious. In the experiments below we use $p=0.1$ for the normal virus first 20 days and $p=0.8$ for the mutated virus in the last 80 days.</p>
 </li>
 </ul>
 \begin{align*}
@@ -14562,13 +14548,12 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We first make a plot as a base case to be compared to, where $b=10, k=0.01, p=0.1$ We see from the plot below that $i(t)$ reaches its maximum at around 80% on day 30.</p>
-<p><img style="float: center;" src="figs/agent_varparm_base_case.png" width="40%"></p>
-
+<div align="center"><img src="figs/agent_varparm_base_case.png" width="40%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Let's see the effect of social distancing. The trajectories of $s(t), i(t)$ and $r(t)$ for altered parameters are represented in dash lines. We see that early social distancing (left) can mitigate the spreads of the pandemic. The dash orange line $i(t)$ increases at a slower speed. The peak arrives later with a smaller value, which could alleviate the pressure of medical capacity. In contrast, late social distancing starting at day 20 (right) doesn't really help, since the susceptible fraction $s(t)$ is already quite small ane most people are infected or removed.</p>
+<p>Let's see the effect of social distancing. The trajectories of $s(t), i(t)$ and $r(t)$ for altered parameters are represented in dash lines. We see that early social distancing (left) can mitigate the spreads of the pandemic. The dash orange line $i(t)$ increases at a slower speed. The peak arrives later with a smaller value, which could alleviate the pressure of medical capacity. In contrast, late social distancing starting at day 20 (right) doesn't really help, since the susceptible fraction $s(t)$ is already quite small and most people are infected or removed.</p>
 <table>
    <tr>
        <td><img src="figs/agent_varparm_social_distancing_early.png" width="80%"></td>
@@ -14579,7 +14564,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Then, we analyze the effect of durg development and distribution. Similarly, early drug distribution from day 15 (left) effectively change the trajectory of $i(t)$: it starts to decreases immediately rather than continue to reach its maximum in the base case. However, the susceptible fraction $s(t)$ does not change much. Drug distribution in a late stage around day 30 (right) changes $i(t)$ immediately too, but the peak is already arrived and the medical system may already be crashed.</p>
+<p>Then, we analyze the effect of drug development and distribution. Similarly, early drug distribution from day 15 (left) effectively change the trajectory of $i(t)$: it starts to decreases immediately rather than continue to reach its maximum in the base case. However, the susceptible fraction $s(t)$ does not change much. Drug distribution in a late stage around day 30 (right) changes $i(t)$ immediately too, but the peak is already arrived and the medical system may already be crashed.</p>
 <table>
    <tr>
        <td><img src="figs/agent_varparm_drug_early.png" width="80%"></td>
@@ -14601,9 +14586,8 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can consider the three effects in the early stage simultaneouly. The dash curves deviate significantly from the base case. Social distancing rules are enforced on day 5, drugs distribution starts from day 15. Theses two methods effectively decreases $i(t)$. The virus mutation happens on day 20, where we see a jump in the orange dash line. But the peak value is still smaller than that in the base case. Unfortunately, all susceptible individuals are infected eventually.</p>
-<p><img style="float: center;" src="figs/agent_varparm_all.png" width="40%"></p>
-
+<p>We can consider the three effects in the early stage simultaneously. The dash curves deviate significantly from the base case. Social distancing rules are enforced on day 5, drugs distribution starts from day 15. Theses two methods effectively decreases $i(t)$. The virus mutation happens on day 20, where we see a jump in the orange dash line. But the peak value is still smaller than that in the base case. Unfortunately, all susceptible individuals are infected eventually.</p>
+<div align="center"><img src="figs/agent_varparm_all.png" width="40%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -14613,10 +14597,9 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We run similar simulation using the ODE model. One thing difficult is how to put the parameter $p$ in to the differential equations. Since $p$ is related to the speed of virus, transmittion, we can just substitute $b$ in the basic SIR model by $b\times p$.</p>
+<p>We run similar simulation using the ODE model. One thing difficult is how to put the parameter $p$ in to the differential equations. Since $p$ is related to the speed of virus, transmission, we can just substitute $b$ in the basic SIR model by $b\times p$.</p>
 <p>But we found that with the base case parameter $b=10, k=0.01, p=0.1$ the ODE model generates a different base case plot from the agent model's. We may consider adding a power to $p$ to make the two base case plots similar. After tunning the power we let it be 1.5.</p>
-<p><img style="float: center;" src="figs/ode_varparm_base_case.png" width="40%"></p>
-<p>The new differential equations are</p>
+<div align="center"><img src="figs/ode_varparm_base_case.png" width="40%"></div><p>The new differential equations are</p>
 \begin{aligned}
 \frac{d s}{d t} &amp;= -b\cdot p^{1.5} \cdot s(t)\cdot i(t) \\
 \frac{d i}{d t} &amp;= b\cdot p^{1.5}\cdot s(t)\cdot i(t) - k\cdot i(t) \\
@@ -14644,7 +14627,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
    </tr>
 </table><table>
    <tr>
-       <td><img src="figs/ode_varparm_all.png" width="40%"></td>
+       <td><div align="center"><img src="figs/ode_varparm_all.png" width="40%"></div></td>
    </tr>
 </table><p>We see that social distancing seems more significant in the ode model than in the agent model. All three fractions changes quite slowly. The mutation effect is more significant too with a large increment in $i(t)$ on the mutation day $t=20$. Maybe it is due to the effect of introducing the power term in $b\cdot p^1.5$. Drug distribution have similar effects in both models.</p>
 
@@ -14652,7 +14635,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>In all, from the experiments we conclude that, by affecting the interaction rate $b$, early social distancing can flatten the $i(t)$ curve, postpone the arrival of its peak with a smaller value. Drug distribution facilitates the process of recovery by changing $k$. These two methods affect $i(t)$ from different way: one makes the increment of $I$ from $S$ smaler, one makes the decrement of $I$ to $R$ larger. The mutation effect can siginificantly speed up the transmission if it happens in an early stage.</p>
+<p>In all, from the experiments we conclude that, by affecting the interaction rate $b$, early social distancing can flatten the $i(t)$ curve, postpone the arrival of its peak with a smaller value. Drug distribution facilitates the process of recovery by changing $k$. These two methods affect $i(t)$ from different way: one makes the increment of $I$ from $S$ smaller, one makes the decrement of $I$ to $R$ larger. The mutation effect can significantly speed up the transmission if it happens in an early stage.</p>
 <p>The takeaway is that, social distancing and drug distribution should start as early as possible to mitigate the spread of the pandemic.</p>
 
 </div>
@@ -14672,7 +14655,7 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 \frac{d i}{d t} &amp;=a\cdot e(t) -k \cdot i(t) \\
 \frac{d r}{d t} &amp;=k \cdot i(t)
 \end{aligned}</p>
-<p>where $f$ is the fraction of the exposed individuals that becomes infectious eacy day.</p>
+<p>where $f$ is the fraction of the exposed individuals that becomes infectious each day.</p>
 <p>We can repeat our simulation above to see how the curves of $s,i,r$ change with different values of $f$. And plot the 2-d and 3-d phase diagram of the three parameters $b, f, k$. Note that we need to specify the initial fraction of exposed population $e(0)$.</p>
 
 </div>
@@ -14684,21 +14667,18 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Following the coloring tradition, we use blues, oranges, greeens for $S, I, R$. In addition, we use purples for the new state $E$.</p>
+<p>Following the coloring tradition, we use blues, oranges, greens for $S, I, R$. In addition, we use purples for the new state $E$.</p>
 <p>We set $e(0) = i(0) = 0.001, b = 1, k = 0.01$ and run experiments for 10 different $f$ values in log-spaced interval 0.01 to 1. Deeper lines corresponds to larger values of $f$.</p>
 <p>It can be derived that when $f$ is getting closer to 1, the SEIR model converges to the SIR model since the exposed period is quite short. This is shown in the top right purple plot of $e(t)$, where the curves becomes more flattened as $f$ increases.</p>
 <p>When $f$ is very small, the individuals "stuck" in the state $E$ and transit to state $I$ very slowly. This is good since we flatten the orange $i(t)$ curves which gives the medical system more time to prepare and react.</p>
-<p><img src="figs/agent_seir_by_f.png" width="60%" height="100%"></p>
-<p>We then investigate the phase diagrams of the paramters $b,f,k$. We simulate $i(t)$ for 100 days with 1,000 $(b,f,k)$ combinations. The 3-D phase diagram on the 50th day is shown below. Again, darker dots represents larger values of $i(50)$. After investigation we found that $i(50)$ is not sensitive to $k&gt;0.3$, which is consistent with our findings in the SIR model. So we only show the results for small $k$.</p>
-<p><img src="figs/agent_seir_phase_3d.gif" width="40%" height="100%"></p>
-<p>From the above results we can generate three the 2-d phase diagrams by taking the mean of $i(t)$ in the remaning dimension.</p>
-<p><img src="figs/agent_seir_phase_2d.gif" width="100%" height="100%"></p>
-
+<div align="center"><img src="figs/agent_seir_by_f.png" width="60%" height="100%"></div><p>We then investigate the phase diagrams of the parameters $b,f,k$. We simulate $i(t)$ for 100 days with 1,000 $(b,f,k)$ combinations. The 3-D phase diagram on the 50th day is shown below. Again, darker dots represents larger values of $i(50)$. After investigation we found that $i(50)$ is not sensitive to $k&gt;0.3$, which is consistent with our findings in the SIR model. So we only show the results for small $k$.</p>
+<div align="center"><img src="figs/agent_seir_phase_3d.gif" width="40%" height="100%"></div><p>From the above results we can generate three the 2-d phase diagrams by taking the mean of $i(t)$ in the remaining dimension.</p>
+<div align="center"><img src="figs/agent_seir_phase_2d.gif" width="100%" height="100%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can view each cell as a poplation instance, for different combinations of parameters. For population instances with larger infected fraction $f$, the peak of $i(t)$ (darker orange) arrives earlier. If $f$ is small, then the peak arrive later since many individuals are stuck in the expoed state. The peak value also varies. The population instances with larger recovery rate $k$ tends to recover faster, and the color is lighter. The interaction rate $b$ has no significant effect when $t$ is large, which is consistent with the results in the midterm checkpoint.</p>
+<p>We can view each cell as a population instance, for different combinations of parameters. For population instances with larger infected fraction $f$, the peak of $i(t)$ (darker orange) arrives earlier. If $f$ is small, then the peak arrive later since many individuals are stuck in the exposed state. The peak value also varies. The population instances with larger recovery rate $k$ tends to recover faster, and the color is lighter. The interaction rate $b$ has no significant effect when $t$ is large, which is consistent with the results in the midterm checkpoint.</p>
 
 </div>
 </div>
@@ -14709,11 +14689,8 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Simlarly, we repeat these experiments using the ODE model.</p>
-<p><img src="figs/ode_seir_by_f.png" width="60%" height="100%"></p>
-<p><img src="figs/ode_seir_phase_3d.gif" width="40%" height="100%"></p>
-<p><img src="figs/ode_seir_phase_2d.gif" width="100%" height="100%"></p>
-
+<p>Similarly, we repeat these experiments using the ODE model.</p>
+<div align="center"><img src="figs/ode_seir_by_f.png" width="60%" height="100%"></div><div align="center"><img src="figs/ode_seir_phase_3d.gif" width="40%" height="100%"></div><div align="center"><img src="figs/ode_seir_phase_2d.gif" width="100%" height="100%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -14731,13 +14708,12 @@ where $t_0$ represents the time that hospital treatments of the disease become m
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>In this section we try to fit out ODE models to real life Covid-19 data.</p>
 <p>The number of daily new cases can be retrieved from <a href="https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36">CDC's website</a>.</p>
-<p><img style="float: center;" src="figs/data_new_cases.png" width="50%"></p>
-
+<div align="center"><img src="figs/data_new_cases.png" width="50%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Unfortunately, there is no data for daily recomoved cases which is necessary to estimate the removed rate $k$. For simplicity, we assume $k=0.05$, and use the number of daily new cases on day $t-1/0.05=t-20$ to estimate the number of daily removed cases on day $t$.</p>
+<p>Unfortunately, there is no data for daily removed cases which is necessary to estimate the removed rate $k$. For simplicity, we assume $k=0.05$, and use the number of daily new cases on day $t-1/0.05=t-20$ to estimate the number of daily removed cases on day $t$.</p>
 <p>Therefore, from the data of daily new cases $N(t)$ we can compute $$S(t)=1-\sum_{s\le t}N(s)$$ 
 and $$I(t)=\sum_{s\le t}[N(s)-N(s-20)]$$</p>
 <p>Dividing these two quantities by the US population of 382 million we can get the plot of susceptible fraction and infectious fraction.</p>
@@ -14746,26 +14722,24 @@ and $$I(t)=\sum_{s\le t}[N(s)-N(s-20)]$$</p>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img style="float: center;" src="figs/data_s_i_t.png" width="40%"></p>
-
+<div align="center"><img src="figs/data_s_i_t.png" width="40%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The two curves deviate from those in our basic ODE model in previous sections. This is because the population size is large and the parameters $b,k$ are affected by various factors, such as social distancing policies, as discussed in the section of SIR with variaiton on parameters.</p>
+<p>The two curves deviate from those in our basic ODE model in previous sections. This is because the population size is large and the parameters $b,k$ are affected by various factors, such as social distancing policies, as discussed in the section of SIR with variation on parameters.</p>
 <p>As a result, we may consider a piece-wise constant function $b$. The cutoff points can be chosen from the days of local minimums and the local maximums, i.e. day 94, 142, 191, and 239. For each period we use <code>solve_bvp</code> and pass the boundary conditions. Note that we start from the 50-th day since the two lines are nearly constant and the ode result is be unstable in the earlier period.</p>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img style="float: center;" src="figs/ode_fitting.png" width="40%"></p>
-
+<div align="center"><img src="figs/ode_fitting.png" width="40%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can see that the fitting to $s(t)$ is good, while there are rooms for improvement for fitting $i(t)$. The estimated interaction rate parameter $b$ is large from day 50 to 94, and decreases and increases again in the summer (day 150-200) and the election periods (day 250+). Also note that the values is quite smaller than those used in the simulation in the previous sections. But such small $b$ alreay has a huge impact on the society. We can also project that if <code>b</code> is a constant from day 300, then the curve goes exponentially again.</p>
+<p>We can see that the fitting to $s(t)$ is good, while there are rooms for improvement for fitting $i(t)$. The estimated interaction rate parameter $b$ is large from day 50 to 94, and decreases and increases again in the summer (day 150-200) and the election periods (day 250+). Also note that the values is quite smaller than those used in the simulation in the previous sections. But such small $b$ already has a huge impact on the society. We can also project that if $b$ is a constant from day 300, then the curve goes exponentially again.</p>
 <p>For a better fitting, we can cut the curves into more pieces, especially near the local minimums/maximums, where $b$ should change quickly. We may also consider variation on the removed fraction $k$ if the relevant data is available.</p>
 
 </div>
@@ -14806,11 +14780,11 @@ and $$I(t)=\sum_{s\le t}[N(s)-N(s-20)]$$</p>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Agent-based model:</p>
-<p>We notice that if we use the method of creating a <code>Person()</code> object for each individual, the simulation is quite slow. For instance, if the population size $N=10000$, we will have 10000 objects in the memory and need to loop over each of them. As a result, we continuously find ways to optimze it.</p>
+<p>We notice that if we use the method of creating a <code>Person()</code> object for each individual, the simulation is quite slow. For instance, if the population size $N=10000$, we will have 10000 objects in the memory and need to loop over each of them. As a result, we continuously find ways to optimize it.</p>
 <ul>
-<li><p>in the final report, we create a <code>Population()</code> object instead to represent a population. The information to store is just three sets of indices for the three population $S, I$, and $R$. In simulation, we use methods <code>pop.infect(b), pop.recover(k)</code> to update the sets of indices. This turns out to be much 50x faster than the <code>Person()</code> method when N=10000.</p>
+<li><p>in the final report, we create a <code>Population()</code> object instead to represent a population. The information to store is just three sets of indices for the three population $S, I$, and $R$. In simulation, we use methods <code>pop.infect(b), pop.recover(k)</code> to update the sets of indices. This turns out to be much 6x faster than the <code>Person()</code> method when $N=10000$.</p>
 </li>
-<li><p>in order to simulate the interaction, we use <code>np.random.choice(N-1, b, replace=False)</code> to draw $b$ <strong>different</strong> indices of contacts, loop over each infectious individual $I$. This method becomes slow when the infectious population size gets large. After thinking on this, we found we can consider from the suceptible individual's perspective.</p>
+<li><p>in order to simulate the interaction, we use <code>np.random.choice(N-1, b, replace=False)</code> to draw $b$ <strong>different</strong> indices of contacts, loop over each infectious individual $I$. This method becomes slow when the infectious population size gets large. After thinking on this, we found we can consider from the susceptible individual's perspective.</p>
 </li>
 </ul>
 \begin{aligned}
@@ -14821,19 +14795,19 @@ p_2 &amp;= \text{Pr}\ (\text{an }S \text{ is not contacted by all }I \text{'s}) 
  p_3 &amp;= \text{Pr}\ (\text{an }S \text{ is contacted by any }I) \\
  &amp;= 1-p_2 
 \end{aligned}<ul>
-<li><p>Hence we can use <code>np.random.choice</code> to draw $p_3 \cdot \vert S\vert$ individuals from the index set of $S$, without any loops. The speed is 60x faster when $N=10000$.</p>
-</li>
-<li><p>Finally, in the spatial case, we need to call a tree query for each $I$ to find its susceptible neighbors, which involes $\vert I \vert$ iterations. This is inevitable since the interaction is determined by the distance. Fortunately, we can again consider from the suceptible individual's perspective, to check if there is any $I$ in an $S$'s neighborhood. More specifically, in the early period, $\vert I \vert \ll \vert S \vert$, so query by $I$ is more efficient. After a time point, $\vert I \vert &gt; \vert S \vert$, we can then change to query by $S$. The complexity is reduced from $O(\vert I \vert)$ to $O(\min(\vert I \vert,\vert S \vert)$. This effectively facilitates our simulation.</p>
-</li>
+<li>Hence we can use <code>np.random.choice</code> to draw $p_3 \cdot \vert S\vert$ individuals from the index set of $S$, without any loops. The speed is 970x faster when $N=10000$. The computation times for the above three methods are shown in the log-log plot below</li>
 </ul>
-<p>PDE model:</p>
+<div align="center"><img src="figs/comp_perf_agent.png" width="40%"></div><ul>
+<li>Finally, in the spatial case, we need to call a tree query for each $I$ to find its susceptible neighbors, which involes $\vert I \vert$ iterations. This is inevitable since the interaction is determined by the distance. Fortunately, we can again consider from the susceptible individual's perspective, to check if there is any $I$ in an $S$'s neighborhood. More specifically, in the early period, $\vert I \vert \ll \vert S \vert$, so query by $I$ is more efficient. After a time point, $\vert I \vert &gt; \vert S \vert$, we can then change to query by $S$. The complexity is reduced from $O(\vert I \vert)$ to $O(\min(\vert I \vert,\vert S \vert)$. This effectively facilitates our simulation.</li>
+</ul>
+<div align="center"><img src="figs/comp_perf_agent2d.png" width="40%"></div><p>PDE model:</p>
 <ul>
 <li><p>we break the 3 PDEs into 3 systems of $M^2$ ODEs, so when $M$ is large, solving the ODE can be really slow.</p>
 </li>
-<li><p>computational performance also heavily depends on $p$. When $p$ is small (of the order $10^{-3}$ or smaller), the ODEs can be solved in a matter of seconds, but when $p$ becomes large (especially larger than $0.01$), the ODEs can take minutes to solve. We havn't completely understand why $p$ has such a big effect on computation, because the interactions of the ODEs are complicated and neigher of us has experiences on PDE.</p>
+<li><p>computational performance also heavily depends on $p$. When $p$ is small (of the order $10^{-4}$ or smaller), the ODEs can be solved in a matter of seconds, but when $p$ becomes large (especially larger than $0.01$), the ODEs can take minutes to solve. We haven't completely understand why $p$ has such a big effect on computation, because the interactions of the ODEs are complicated and neither of us has experiences on PDE.</p>
 </li>
 </ul>
-
+<div align="center"><img src="figs/comp_perf_pde.png" width="40%"></div>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -14845,7 +14819,7 @@ p_2 &amp;= \text{Pr}\ (\text{an }S \text{ is not contacted by all }I \text{'s}) 
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Agent-based model:</p>
 <ul>
-<li><p>we assumed random direction of movement. In reality, the direction of movement, especially when the movement is relative long distance, is often limited by travel availiablities such as existence of trains, planes, etc.</p>
+<li><p>we assumed random direction of movement. In reality, the direction of movement, especially when the movement is relative long distance, is often limited by travel availabilities such as existence of trains, planes, etc.</p>
 </li>
 <li><p>we assumed a single rate of movement, $p$. In reality, the rate of movement often changes depending on the destination. For example, if the disease breaks out at the corner, then most rational people would want to avoid going to that corner, thus reducing their rate of movement towards that direction.</p>
 </li>
@@ -14869,18 +14843,18 @@ p_2 &amp;= \text{Pr}\ (\text{an }S \text{ is not contacted by all }I \text{'s}) 
 <p>We can find directions of further investigation from the limitations discussed above.</p>
 <p>Agent-based model:</p>
 <ul>
-<li><p>we can model the population with the unit square as a graph, where the nodes are the urban areas and the edges are the availiable traveling routes connecting the urban areas, such as highways, railroads, etc.</p>
+<li><p>we can model the population with the unit square as a graph, where the nodes are the urban areas and the edges are the available traveling routes connecting the urban areas, such as highways, railroads, etc.</p>
 </li>
 <li><p>we can limit the movement of individuals to one of the neighboring towns via one of the traveling routes.</p>
 </li>
-<li><p>we can change the rate of movement $p$ depending on the travel availiability and the destination. For example, $p$ would be large if there are planes connecting two cities and would be small if there's only highways; $p$ would be small, if not zero, if the destination has high rate of infection and would be large if the destination is relatively safe.</p>
+<li><p>we can change the rate of movement $p$ depending on the travel availability and the destination. For example, $p$ would be large if there are planes connecting two cities and would be small if there's only highways; $p$ would be small, if not zero, if the destination has high rate of infection and would be large if the destination is relatively safe.</p>
 </li>
 </ul>
 <p>PDE model:</p>
 <ul>
 <li><p>we can try to solve the PDE directly, either using theoretical derivations, or numerical methods, without changing it into a huge system of ODEs.</p>
 </li>
-<li><p>we can give $s$, $i$, and $r$ different diffusion parameters instead of using a single parameter $p$. This is because on top of $b$ and $k$, we would still expect some different rate of diffusion for the three populations. For example, if vaccines are invented, people would be taking them at a much faster rate than the disease spreaded in the first place, so $r$ would have a large diffusion parameter than $i$. Of course, ideally these diffusion parameters, just like $b$ and $k$ as discussed above in the first variation, should be also be able to change with time.</p>
+<li><p>we can give $s$, $i$, and $r$ different diffusion parameters instead of using a single parameter $p$. This is because on top of $b$ and $k$, we would still expect some different rate of diffusion for the three populations. For example, if vaccines are invented, people would be taking them at a much faster rate than the disease spread in the first place, so $r$ would have a large diffusion parameter than $i$. Of course, ideally these diffusion parameters, just like $b$ and $k$ as discussed above in the first variation, should be also be able to change with time.</p>
 </li>
 </ul>
 
@@ -14894,6 +14868,7 @@ p_2 &amp;= \text{Pr}\ (\text{an }S \text{ is not contacted by all }I \text{'s}) 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <ol>
+<li><a href="https://github.com/caam37830/default-project">Project Requirements</a></li>
 <li><a href="https://sites.me.ucsb.edu/~moehlis/APC514/tutorials/tutorial_seasonal/node4.html">SEIR Model</a></li>
 <li><a href="https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36">US Covid-19 Data from CDC</a></li>
 </ol>

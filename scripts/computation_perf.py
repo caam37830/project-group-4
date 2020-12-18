@@ -117,9 +117,9 @@ for p in ps:
     t0 = time()
     pde_model(i0, pos, M, T, b, k, p)
     ts.append(time()-t0)
-
-plt.plot(ps, np.log10(ts), c='C5')
-plt.xlabel(r"$p$")
+ps
+plt.plot(np.log10(ps), np.log10(ts), c='C5')
+plt.xlabel(r"$\log_{10}(p)$")
 plt.ylabel(r"$\log_{10}(t)$")
 plt.title(r'Computation times for different $p$ in the PDE model')
 plt.savefig('../docs/figs/comp_perf_pde.png',dpi=200)
