@@ -27,6 +27,8 @@ class Population():
         self.r_ind = np.array([])
 
 
+
+
     def infect(self, b: int):
         """
         each infected individual contact b other individuals
@@ -43,6 +45,11 @@ class Population():
         self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
         self.i_ind = np.concatenate((self.i_ind, new_i_ind))
 
+    def infect_slow(self, b: int):
+        contact = np.asarray([np.random.choice(self.N, b, replace=False) for i in self.i_ind]).flatten()
+        new_i_ind = self.s_ind[np.isin(self.s_ind, contact)]
+        self.s_ind = np.setdiff1d(self.s_ind, new_i_ind, True)
+        self.i_ind = np.concatenate((self.i_ind, new_i_ind))
 
     def recover(self, k: float):
         """
