@@ -18,7 +18,7 @@
   - ✅2d, lines
     - also change color and rgb
 
-- math
+- ✅ math
   - average actual step size
     - simulation
     - integral
