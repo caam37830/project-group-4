@@ -1,0 +1,6 @@
+# packages required to run code
+numpy
+pandas
+scipy
+matplotlib
+tqdm
